@@ -1,4 +1,4 @@
-//===--- MainDefinedInFileWithMainAffixCheck.h - clang-tidy -----*- C++ -*-===//
+//===--- MainImplementationFilenameCheck.h - clang-tidy ---------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,8 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef GFX_CHECKS_SRC_GFX_MAINDEFINEDINFILEWITHMAINAFFIXCHECK_H
-#define GFX_CHECKS_SRC_GFX_MAINDEFINEDINFILEWITHMAINAFFIXCHECK_H
+#ifndef GFX_CHECKS_SRC_GFX_MAINIMPLEMENTATIONFILENAMECHECK_H
+#define GFX_CHECKS_SRC_GFX_MAINIMPLEMENTATIONFILENAMECHECK_H
 
 #include "ClangTidyCheck.h"
 
@@ -16,9 +16,9 @@ namespace tidy {
 namespace gfx {
 
 /// Checks all llvm-libc implementation is within the correct namespace.
-class MainDefinedInFileWithMainAffixCheck : public ClangTidyCheck {
+class MainImplementationFilenameCheck : public ClangTidyCheck {
 public:
-  MainDefinedInFileWithMainAffixCheck(StringRef Name,
+  MainImplementationFilenameCheck(StringRef Name,
                                       ClangTidyContext *Context);
 
   void storeOptions(ClangTidyOptions::OptionMap &Opts) override;
@@ -37,4 +37,4 @@ private:
 } // namespace tidy
 } // namespace clang
 
-#endif // GFX_CHECKS_SRC_GFX_MAINDEFINEDINFILEWITHMAINAFFIXCHECK_H
+#endif // GFX_CHECKS_SRC_GFX_MAINIMPLEMENTATIONFILENAMECHECK_H

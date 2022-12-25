@@ -6,7 +6,7 @@ set(LLVM_LINK_COMPONENTS
 add_clang_library(clangTidyGFXModule
   GFXTidyModule.cpp
   ImplementationInNamespaceCheck.cpp
-  MainDefinedInFileWithMainAffixCheck.cpp
+  MainImplementationFilenameCheck.cpp
 
   LINK_LIBS
   clangTidy

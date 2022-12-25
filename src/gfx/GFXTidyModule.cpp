@@ -2,7 +2,7 @@
 #include "ClangTidyModule.h"
 #include "ClangTidyModuleRegistry.h"
 #include "ImplementationInNamespaceCheck.h"
-#include "MainDefinedInFileWithMainAffixCheck.h"
+#include "MainImplementationFilenameCheck.h"
 
 namespace clang {
 namespace tidy {
@@ -13,8 +13,8 @@ public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
     CheckFactories.registerCheck<ImplementationInNamespaceCheck>(
         "gfx-implementation-in-namespace");
-    CheckFactories.registerCheck<MainDefinedInFileWithMainAffixCheck>(
-        "gfx-main-defined-in-file-with-main-affix");
+    CheckFactories.registerCheck<MainImplementationFilenameCheck>(
+        "gfx-main-implementation-filename");
   }
 };
 

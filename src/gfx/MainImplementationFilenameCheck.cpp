@@ -1,4 +1,5 @@
-//===--- ImplementationInNamespaceCheck.cpp - clang-tidy ------------------===//
+//===--- MainImplementationFilenameCheck.cpp - clang-tidy
+//------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,7 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "MainDefinedInFileWithMainAffixCheck.h"
+#include "MainImplementationFilenameCheck.h"
 #include "utils/OptionsUtils.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
@@ -17,22 +18,21 @@ namespace clang {
 namespace tidy {
 namespace gfx {
 
-MainDefinedInFileWithMainAffixCheck::MainDefinedInFileWithMainAffixCheck(
+MainImplementationFilenameCheck::MainImplementationFilenameCheck(
     StringRef Name, ClangTidyContext *Context)
     : ClangTidyCheck(Name, Context),
       Affixes(utils::options::parseStringList(Options.get("Affix", "none"))) {}
 
-void MainDefinedInFileWithMainAffixCheck::storeOptions(
+void MainImplementationFilenameCheck::storeOptions(
     ClangTidyOptions::OptionMap &Opts) {
   Options.store(Opts, "Affix", utils::options::serializeStringList(Affixes));
 }
 
-void MainDefinedInFileWithMainAffixCheck::registerMatchers(
-    MatchFinder *Finder) {
+void MainImplementationFilenameCheck::registerMatchers(MatchFinder *Finder) {
   Finder->addMatcher(functionDecl(isMain()).bind("main"), this);
 }
 
-void MainDefinedInFileWithMainAffixCheck::check(
+void MainImplementationFilenameCheck::check(
     const MatchFinder::MatchResult &Result) {
   const auto *MatchedDecl = Result.Nodes.getNodeAs<Decl>("main");
 
