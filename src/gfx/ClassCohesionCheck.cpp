@@ -33,27 +33,21 @@ void ClassCohesionCheck::registerMatchers(MatchFinder *Finder) {
 }
 
 void ClassCohesionCheck::check(const MatchFinder::MatchResult &Result) {
-  const auto *MatchedTypeDecl = Result.Nodes.getNodeAs<TypeDecl>("class");
-  if (MatchedTypeDecl) {
-    if (Result.SourceManager->isInMainFile(MatchedTypeDecl->getLocation())) {
-      Classes.push_back(MatchedTypeDecl);
-    }
-  }
+  auto addIfValid = [&Result](const char * matcher, auto& vector){
+    using VectorType = std::remove_reference_t<decltype(vector)>;
+    using ElementType = std::remove_pointer_t<typename VectorType::value_type>;
 
-  const auto *MatchedNamedDecl = Result.Nodes.getNodeAs<FieldDecl>("member");
-  if (MatchedNamedDecl) {
-    if (Result.SourceManager->isInMainFile(MatchedNamedDecl->getLocation())) {
-      Members.push_back(MatchedNamedDecl);
+    const auto* match = Result.Nodes.getNodeAs<ElementType>(matcher);
+    if (match) {
+      if (Result.SourceManager->isInMainFile(match->getLocation())) {
+        vector.push_back(match);
+      }
     }
-  }
+  };
 
-  const auto *MatchedMethodDecl =
-      Result.Nodes.getNodeAs<FunctionDecl>("method");
-  if (MatchedMethodDecl) {
-    if (Result.SourceManager->isInMainFile(MatchedMethodDecl->getLocation())) {
-      Methods.push_back(MatchedMethodDecl);
-    }
-  }
+  addIfValid("class", Classes);
+  addIfValid("member", Members);
+  addIfValid("method", Methods);
 }
 
 void ClassCohesionCheck::onEndOfTranslationUnit() {
