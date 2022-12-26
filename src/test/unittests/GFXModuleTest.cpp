@@ -1,4 +1,5 @@
 #include "ClangTidyTest.h"
+#include "gfx/ClassCohesionCheck.h"
 #include "gfx/ImplementationInNamespaceCheck.h"
 #include "gfx/MainImplementationFilenameCheck.h"
 #include "gtest/gtest.h"
@@ -39,6 +40,37 @@ TEST(GFXModuleTest, MainSuffixOption) {
   std::vector<ClangTidyError> Errors{};
   runCheckOnCode<MainImplementationFilenameCheck>(
       "int main() {}", &Errors, "foo/bar_main.cpp", None, Options);
+
+  EXPECT_EQ(0U, Errors.size());
+}
+
+TEST(GFXModuleTest, ClassCohesion) {
+  using namespace clang::tidy::gfx;
+
+  std::vector<ClangTidyError> Errors{};
+  runCheckOnCode<ClassCohesionCheck>("class Foo\n"
+                                     "{\n"
+                                     "public:\n"
+                                     "  int x() {return 5;}\n"
+                                     "  int y() {return a;}\n"
+                                     "  int z() {return b + a;}\n"
+                                     "private:\n"
+                                     "  int a{3};\n"
+                                     "  int b{4};\n"
+                                     "};\n"
+                                     "\n"
+                                     "int i{8};\n"
+                                     "\n"
+                                     "class Bar\n"
+                                     "{\n"
+                                     "  int a{1};\n"
+                                     "  int b{1};\n"
+                                     "};\n",
+                                     &Errors);
+
+  for (const auto &error : Errors) {
+    std::cout << error.Message.Message << '\n';
+  }
 
   EXPECT_EQ(0U, Errors.size());
 }

@@ -1,6 +1,7 @@
 #include "ClangTidy.h"
 #include "ClangTidyModule.h"
 #include "ClangTidyModuleRegistry.h"
+#include "ClassCohesionCheck.h"
 #include "ImplementationInNamespaceCheck.h"
 #include "MainImplementationFilenameCheck.h"
 
@@ -15,6 +16,7 @@ public:
         "gfx-implementation-in-namespace");
     CheckFactories.registerCheck<MainImplementationFilenameCheck>(
         "gfx-main-implementation-filename");
+    CheckFactories.registerCheck<ClassCohesionCheck>("gfx-class-cohesion");
   }
 };
 
