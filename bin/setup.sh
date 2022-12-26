@@ -37,12 +37,16 @@ function run()
 
   if [ ! -L "$CLANG_TIDY_MODULES/gfx" ]; then
     ln -s $GFX_MODULE $CLANG_TIDY_MODULES
+  else
+    echo "link exists: '$CLANG_TIDY_MODULES/gfx'"
   fi
 
   LLVM_TEST_CHECKERS=$LLVM_PROJECT/clang-tools-extra/test/clang-tidy/checkers
 
   if [ ! -L $LLVM_TEST_CHECKERS/gfx ]; then
     ln -s $GFX_SOURCE/test/checkers/gfx $LLVM_TEST_CHECKERS
+  else
+    echo "link exists: '$LLVM_TEST_CHECKERS/gfx'"
   fi
 
   LLVM_UNIT_TESTS=$LLVM_PROJECT/clang-tools-extra/unittests/clang-tidy/
@@ -50,6 +54,8 @@ function run()
 
   if [ ! -L $LLVM_UNIT_TESTS/GFXModuleTest.cpp ]; then
     ln -s $GFX_MODULE_TEST_SUITE $LLVM_UNIT_TESTS
+  else
+    echo "link exists: '$LLVM_UNIT_TESTS/GFXModuleTest.cpp'"
   fi
 
   log "done!"
