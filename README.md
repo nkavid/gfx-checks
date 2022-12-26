@@ -93,3 +93,9 @@ namespace bar
 ```
 
 `baz` may be class or namespace or function...
+
+- [ ] class cohesion
+
+similar to this python checker?
+
+[flake8-cohesion](https://github.com/mschwager/cohesion)
