@@ -20,24 +20,22 @@ namespace gfx {
 
 ClassCohesionCheck::ClassCohesionCheck(StringRef Name,
                                        ClangTidyContext *Context)
-    : ClangTidyCheck(Name, Context), Score(Options.get("Score", -1)) {}
+    : ClangTidyCheck(Name, Context), Score(Options.get("Score", 100)) {}
 
 void ClassCohesionCheck::storeOptions(ClangTidyOptions::OptionMap &Opts) {
   Options.store(Opts, "Score", Score);
 }
 
 void ClassCohesionCheck::registerMatchers(MatchFinder *Finder) {
-  Finder->addMatcher(tagDecl(isClass()).bind("class"), this);
-  Finder->addMatcher(fieldDecl().bind("member"), this);
   Finder->addMatcher(cxxMethodDecl().bind("method"), this);
 }
 
 void ClassCohesionCheck::check(const MatchFinder::MatchResult &Result) {
-  auto addIfValid = [&Result](const char * matcher, auto& vector){
+  auto addIfValid = [&Result](const char *matcher, auto &vector) {
     using VectorType = std::remove_reference_t<decltype(vector)>;
     using ElementType = std::remove_pointer_t<typename VectorType::value_type>;
 
-    const auto* match = Result.Nodes.getNodeAs<ElementType>(matcher);
+    const auto *match = Result.Nodes.getNodeAs<ElementType>(matcher);
     if (match) {
       if (Result.SourceManager->isInMainFile(match->getLocation())) {
         vector.push_back(match);
@@ -45,23 +43,81 @@ void ClassCohesionCheck::check(const MatchFinder::MatchResult &Result) {
     }
   };
 
-  addIfValid("class", Classes);
-  addIfValid("member", Members);
   addIfValid("method", Methods);
 }
 
+static void traverse(const TypeDecl *parent, const Stmt *statement,
+                     std::vector<const FieldDecl *> &members) {
+  if (!statement) {
+    return;
+  }
+  if (!parent) {
+    return;
+  }
+  const auto children = statement->children();
+  if (children.empty()) {
+    return;
+  }
+
+  for (const auto &child : children) {
+    if (!child) {
+      continue;
+    }
+    if (child->getStmtClass() == Stmt::MemberExprClass) {
+      const auto *member = dyn_cast<MemberExpr>(child)->getMemberDecl();
+      if (dyn_cast<FieldDecl>(member)) {
+        if (dyn_cast<FieldDecl>(member)->getParent() == parent) {
+          members.push_back(dyn_cast<FieldDecl>(member));
+        }
+      }
+    }
+    traverse(parent, child, members);
+  }
+}
+
 void ClassCohesionCheck::onEndOfTranslationUnit() {
-  for (const auto *elem : Classes) {
-    diag(elem->getLocation(), "Classes: %0") << elem->getName();
+  for (const auto *method : Methods) {
+    const auto *parent = dyn_cast<TypeDecl>(method->getParent());
+    allClassMethods[parent].push_back(method);
+
+    const auto *methodBody = method->getBody();
+    auto &members = usedMembers[method];
+    traverse(parent, methodBody, members);
+
+    std::unique(members.begin(), members.end());
   }
 
-  for (const auto *elem : Members) {
-    diag(elem->getLocation(), "Members: %0, %1")
-        << elem->getName() << elem->getParent()->getName();
+  for (const auto &[method, members] : usedMembers) {
+    const auto *parent = dyn_cast<TypeDecl>(method->getParent());
+
+    auto &allMembers = allClassMembers[parent];
+
+    allMembers.insert(allMembers.end(), members.begin(), members.end());
+    std::unique(allMembers.begin(), allMembers.end());
   }
 
-  for (const auto *elem : Methods) {
-    diag(elem->getLocation(), "Methods: %0") << elem->getName();
+  for (const auto &[checkedClass, allMembers] : allClassMembers) {
+    const auto methods = allClassMethods[checkedClass];
+
+    unsigned numMembers = allMembers.size();
+    unsigned sum = 0;
+    for (const auto method : methods) {
+      unsigned numUsed = usedMembers[method].size();
+      auto score =
+          100.0f * static_cast<float>(numUsed) / static_cast<float>(numMembers);
+      methodScores[method] = static_cast<unsigned>(score);
+      sum += methodScores[method];
+    }
+
+    sum = sum / methods.size();
+
+    if (sum <= Score) {
+      for (const auto *method : methods) {
+        diag(method->getLocation(), "[%0 total %3] %0::%1() score %2")
+            << dyn_cast<NamedDecl>(method->getParent())->getName()
+            << method->getName() << methodScores[method] << sum;
+      }
+    }
   }
 }
 

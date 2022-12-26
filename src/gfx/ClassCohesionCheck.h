@@ -11,6 +11,7 @@
 
 #include "ClangTidyCheck.h"
 
+#include <map>
 #include <vector>
 
 namespace clang {
@@ -32,9 +33,11 @@ public:
   void onEndOfTranslationUnit() override;
 
 private:
-  std::vector<const TypeDecl *> Classes;
-  std::vector<const FieldDecl *> Members;
+  std::map<const TypeDecl *, std::vector<const FieldDecl *>> allClassMembers;
+  std::map<const TypeDecl *, std::vector<const FunctionDecl *>> allClassMethods;
   std::vector<const FunctionDecl *> Methods;
+  std::map<const FunctionDecl *, std::vector<const FieldDecl *>> usedMembers;
+  std::map<const FunctionDecl *, unsigned> methodScores;
   const unsigned Score;
 };
 

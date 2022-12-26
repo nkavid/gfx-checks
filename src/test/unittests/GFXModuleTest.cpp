@@ -47,6 +47,9 @@ TEST(GFXModuleTest, MainSuffixOption) {
 TEST(GFXModuleTest, ClassCohesion) {
   using namespace clang::tidy::gfx;
 
+  ClangTidyOptions Options;
+  Options.CheckOptions["test-check-0.Score"] = "50";
+
   std::vector<ClangTidyError> Errors{};
   runCheckOnCode<ClassCohesionCheck>("class Foo\n"
                                      "{\n"
@@ -63,16 +66,15 @@ TEST(GFXModuleTest, ClassCohesion) {
                                      "\n"
                                      "class Bar\n"
                                      "{\n"
+                                     "public:\n"
+                                     "  int y() {return a;}\n"
+                                     "private:\n"
                                      "  int a{1};\n"
                                      "  int b{1};\n"
                                      "};\n",
-                                     &Errors);
+                                     &Errors, "foo/bar.cpp", None, Options);
 
-  for (const auto &error : Errors) {
-    std::cout << error.Message.Message << '\n';
-  }
-
-  EXPECT_EQ(0U, Errors.size());
+  EXPECT_EQ(3U, Errors.size());
 }
 
 } // namespace test
