@@ -2,6 +2,9 @@
 
 class Foo {
 public:
+  Foo() {}
+  ~Foo() = default;
+
   int x() { return 5; }
   int y() { return a; }
   int z() { return b + a; }
