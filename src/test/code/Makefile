@@ -9,5 +9,9 @@ dummy1:
 	@g++ ${CXX_FLAGS} -o $@ $@.cpp
 	@mv $@ bin/
 
-all: setup dummy1
+dummy2:
+	@g++ ${CXX_FLAGS} -o $@ $@.cpp
+	@mv $@ bin/
+
+all: setup dummy1 dummy2
 	@echo "done!"
