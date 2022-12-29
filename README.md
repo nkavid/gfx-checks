@@ -5,16 +5,16 @@ clang-tidy checks for gfx repository
 ## Build
 
 ```sh
-# called from 'llvm-project/build/'
-cmake -Sclang-tools-extra \
+# called from 'llvm-project/' repo root
+cmake -Sllvm -Bbuild \
 -DCMAKE_CXX_STANDARD=17 \
 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 -DCMAKE_BUILD_TYPE=Release \
 -DLLVM_TARGETS_TO_BUILD=X86 \
 -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" \
+-DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi" \
 -DLLVM_EXTERNAL_PROJECTS=iwyu \
--DLLVM_EXTERNAL_IWYU_SOURCE_DIR=../../include-what-you-use \
-../llvm
+-DLLVM_EXTERNAL_IWYU_SOURCE_DIR=../include-what-you-use
 ```
 
 Example setup if `llvm-project` and `gfx-checks` repos are in the
