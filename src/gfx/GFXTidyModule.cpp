@@ -16,7 +16,7 @@ public:
         "gfx-implementation-in-namespace");
     CheckFactories.registerCheck<MainImplementationFilenameCheck>(
         "gfx-main-implementation-filename");
-    CheckFactories.registerCheck<ClassCohesionCheck>("gfx-class-cohesion");
+    CheckFactories.registerCheck<ClassCohesionCheck>("gfx-experimental-class-cohesion");
   }
 };
 
