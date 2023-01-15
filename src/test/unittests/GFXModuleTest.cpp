@@ -1,5 +1,6 @@
 #include "ClangTidyTest.h"
 #include "gfx/ClassCohesionCheck.h"
+#include "gfx/PackageNamespaceCheck.h"
 #include "gfx/ImplementationInNamespaceCheck.h"
 #include "gfx/MainImplementationFilenameCheck.h"
 #include "gtest/gtest.h"
@@ -73,6 +74,15 @@ TEST(GFXModuleTest, ClassCohesion) {
                                      "  int b{1};\n"
                                      "};\n",
                                      &Errors, "foo/bar.cpp", None, Options);
+
+  EXPECT_EQ(3U, Errors.size());
+}
+
+TEST(GFXModuleTest, PackageNamespaceCheck) {
+  using namespace clang::tidy::gfx;
+
+  std::vector<ClangTidyError> Errors{};
+  runCheckOnCode<PackageNamespaceCheck>("class Foo;\n", &Errors, "wow/gfx/foo/bar.cpp");
 
   EXPECT_EQ(3U, Errors.size());
 }

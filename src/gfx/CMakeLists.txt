@@ -8,6 +8,7 @@ add_clang_library(clangTidyGFXModule
   ImplementationInNamespaceCheck.cpp
   MainImplementationFilenameCheck.cpp
   ClassCohesionCheck.cpp
+  PackageNamespaceCheck.cpp
 
   LINK_LIBS
   clangTidy
