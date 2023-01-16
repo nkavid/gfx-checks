@@ -1,8 +1,8 @@
 #include "ClangTidyTest.h"
 #include "gfx/ClassCohesionCheck.h"
-#include "gfx/PackageNamespaceCheck.h"
 #include "gfx/ImplementationInNamespaceCheck.h"
 #include "gfx/MainImplementationFilenameCheck.h"
+#include "gfx/PackageNamespaceCheck.h"
 #include "gtest/gtest.h"
 
 #include <iostream>
@@ -82,9 +82,23 @@ TEST(GFXModuleTest, PackageNamespaceCheck) {
   using namespace clang::tidy::gfx;
 
   std::vector<ClangTidyError> Errors{};
-  runCheckOnCode<PackageNamespaceCheck>("class Foo;\n", &Errors, "wow/gfx/foo/bar.cpp");
+  runCheckOnCode<PackageNamespaceCheck>("namespace gfx\n"
+                                        "{\n"
+                                        "namespace foo\n"
+                                        "{\n"
+                                        "namespace utils\n"
+                                        "{\n"
+                                        "class Foo;\n"
+                                        "}\n"
+                                        "}\n"
+                                        "}\n",
+                                        &Errors, "wow/gfx/foo/bar.cpp");
 
-  EXPECT_EQ(3U, Errors.size());
+  for (const auto &error : Errors) {
+    std::cout << error.Message.Message << '\n';
+  }
+
+  EXPECT_EQ(0U, Errors.size());
 }
 
 } // namespace test

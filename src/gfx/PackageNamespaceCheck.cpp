@@ -8,6 +8,7 @@
 
 #include "PackageNamespaceCheck.h"
 #include "clang/AST/ASTContext.h"
+#include "clang/AST/Decl.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 
 using namespace clang::ast_matchers;
@@ -16,39 +17,49 @@ namespace clang {
 namespace tidy {
 namespace gfx {
 
-const static StringRef RequiredNamespace = "gfx";
 void PackageNamespaceCheck::registerMatchers(MatchFinder *Finder) {
-  Finder->addMatcher(
-      decl(hasParent(translationUnitDecl()), unless(linkageSpecDecl()))
-          .bind("child_of_translation_unit"),
-      this);
+  Finder->addMatcher(namespaceDecl().bind("namespace_declaration"), this);
 }
 
-void PackageNamespaceCheck::check(
-    const MatchFinder::MatchResult &Result) {
+void PackageNamespaceCheck::check(const MatchFinder::MatchResult &Result) {
   const auto *MatchedDecl =
-      Result.Nodes.getNodeAs<Decl>("child_of_translation_unit");
+      Result.Nodes.getNodeAs<NamespaceDecl>("namespace_declaration");
 
-  if (!Result.SourceManager->isInMainFile(MatchedDecl->getLocation()))
-    return;
-
-  if (const auto *NS = dyn_cast<NamespaceDecl>(MatchedDecl)) {
-    if (NS->getName() != RequiredNamespace) {
-      diag(NS->getLocation(), "'%0' needs to be the outermost namespace")
-          << RequiredNamespace;
-    }
+  if (!Result.SourceManager->isInMainFile(MatchedDecl->getLocation())) {
     return;
   }
 
-  if (const auto *ND = dyn_cast<NamedDecl>(MatchedDecl)) {
-    if (ND->getName() == "main") {
-      return;
-    }
+  if (MatchedDecl->getName() == "detail") {
+    return;
   }
 
-  diag(MatchedDecl->getLocation(),
-       "declaration must be declared within the '%0' namespace")
-      << RequiredNamespace;
+  if (MatchedDecl->isAnonymousNamespace()) {
+    return;
+  }
+
+  auto FileName =
+      Result.SourceManager->getFilename(MatchedDecl->getLocation()).str();
+
+  auto RelativeFilename =
+      FileName.substr(FileName.find("gfx"), std::string::npos);
+
+  if (RelativeFilename.find(MatchedDecl->getName()) == std::string::npos) {
+    if (const auto *parentNamespace =
+            dyn_cast<NamespaceDecl>(MatchedDecl->getParent())) {
+      if (RelativeFilename.find(parentNamespace->getName()) ==
+          std::string::npos) {
+        diag(MatchedDecl->getLocation(), "'%0' parent namespace for '%1' does "
+                                         "not match any directories in '%2'")
+            << parentNamespace->getName() << MatchedDecl->getName()
+            << RelativeFilename;
+      } else {
+        return;
+      }
+    }
+    diag(MatchedDecl->getLocation(),
+         "'%0' does not match any directories in '%1'")
+        << MatchedDecl->getName() << RelativeFilename;
+  }
 }
 
 } // namespace gfx
