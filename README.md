@@ -24,6 +24,13 @@ same directory and `setup.sh` is called from this repo root.
 ./bin/setup.sh ../llvm-project/ src/
 ```
 
+```sh
+# make and run unit tests for gfx module
+make ClangTidyTests
+../build/tools/clang/tools/extra/unittests/clang-tidy/ClangTidyTests \
+--gtest_filter="GFXModuleTest.*"
+```
+
 Changes in file `clang-tools-extra/clang-tidy/CMakeLists.txt`
 
 ```diff
