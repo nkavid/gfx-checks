@@ -81,18 +81,25 @@ TEST(GFXModuleTest, ClassCohesion) {
 TEST(GFXModuleTest, PackageNamespaceCheck) {
   using namespace clang::tidy::gfx;
 
+  ClangTidyOptions Options;
+  Options.CheckOptions["test-check-0.Allowed"] = "wow";
+
   std::vector<ClangTidyError> Errors{};
   runCheckOnCode<PackageNamespaceCheck>("namespace gfx\n"
                                         "{\n"
                                         "namespace foo\n"
+                                        "{\n"
+                                        "namespace wow\n"
                                         "{\n"
                                         "namespace utils\n"
                                         "{\n"
                                         "class Foo;\n"
                                         "}\n"
                                         "}\n"
+                                        "}\n"
                                         "}\n",
-                                        &Errors, "wow/gfx/foo/bar.cpp");
+                                        &Errors, "wow/gfx/foo/bar.cpp", None,
+                                        Options);
 
   for (const auto &error : Errors) {
     std::cout << error.Message.Message << '\n';

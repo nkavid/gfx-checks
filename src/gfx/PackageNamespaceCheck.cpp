@@ -39,18 +39,23 @@ void PackageNamespaceCheck::check(const MatchFinder::MatchResult &Result) {
     return;
   }
 
-  if (MatchedDecl->getName() == "detail") {
+  if (MatchedDecl->isAnonymousNamespace()) {
     return;
   }
 
-  if (MatchedDecl->isAnonymousNamespace()) {
-    return;
+  for (const auto &allowed : _allowed) {
+    if (MatchedDecl->getName() == allowed) {
+      return;
+    }
   }
 
   if (_filepath.find(MatchedDecl->getName()) == std::string::npos) {
     if (const auto *parentNamespace =
             dyn_cast<NamespaceDecl>(MatchedDecl->getParent())) {
       if (_filepath.find(parentNamespace->getName()) == std::string::npos) {
+        if (parentNamespace->getName() == _allowed[0]) {
+          return;
+        }
         diag(MatchedDecl->getLocation(), "'%0' parent namespace for '%1' does "
                                          "not match any directories in '%2'")
             << parentNamespace->getName() << MatchedDecl->getName()
