@@ -10,6 +10,9 @@
 #define GFX_CHECKS_SRC_GFX_PACKAGENAMESPACECHECK_H
 
 #include "ClangTidyCheck.h"
+#include "utils/OptionsUtils.h"
+
+#include <string>
 
 namespace clang {
 namespace tidy {
@@ -17,8 +20,7 @@ namespace gfx {
 
 class PackageNamespaceCheck : public ClangTidyCheck {
 public:
-  PackageNamespaceCheck(StringRef Name, ClangTidyContext *Context)
-      : ClangTidyCheck(Name, Context) {}
+  PackageNamespaceCheck(StringRef Name, ClangTidyContext *Context);
 
   bool isLanguageVersionSupported(const LangOptions &LangOpts) const override {
     return LangOpts.CPlusPlus;
@@ -26,6 +28,10 @@ public:
 
   void registerMatchers(ast_matchers::MatchFinder *Finder) override;
   void check(const ast_matchers::MatchFinder::MatchResult &Result) override;
+
+private:
+  std::string _filepath{};
+  std::vector<StringRef> _allowed{};
 };
 
 } // namespace gfx

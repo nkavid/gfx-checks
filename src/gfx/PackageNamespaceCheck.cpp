@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "PackageNamespaceCheck.h"
+#include "utils/OptionsUtils.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/Decl.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
@@ -16,6 +17,15 @@ using namespace clang::ast_matchers;
 namespace clang {
 namespace tidy {
 namespace gfx {
+
+PackageNamespaceCheck::PackageNamespaceCheck(StringRef Name,
+                                             ClangTidyContext *Context)
+    : ClangTidyCheck(Name, Context),
+      _allowed(utils::options::parseStringList(Options.get("Allowed", ""))) {
+  auto string = Context->getCurrentFile().str();
+  auto loc = string.find("gfx/");
+  _filepath = string.substr(loc, std::string::npos);
+}
 
 void PackageNamespaceCheck::registerMatchers(MatchFinder *Finder) {
   Finder->addMatcher(namespaceDecl().bind("namespace_declaration"), this);
@@ -37,28 +47,21 @@ void PackageNamespaceCheck::check(const MatchFinder::MatchResult &Result) {
     return;
   }
 
-  auto FileName =
-      Result.SourceManager->getFilename(MatchedDecl->getLocation()).str();
-
-  auto RelativeFilename =
-      FileName.substr(FileName.find("gfx"), std::string::npos);
-
-  if (RelativeFilename.find(MatchedDecl->getName()) == std::string::npos) {
+  if (_filepath.find(MatchedDecl->getName()) == std::string::npos) {
     if (const auto *parentNamespace =
             dyn_cast<NamespaceDecl>(MatchedDecl->getParent())) {
-      if (RelativeFilename.find(parentNamespace->getName()) ==
-          std::string::npos) {
+      if (_filepath.find(parentNamespace->getName()) == std::string::npos) {
         diag(MatchedDecl->getLocation(), "'%0' parent namespace for '%1' does "
                                          "not match any directories in '%2'")
             << parentNamespace->getName() << MatchedDecl->getName()
-            << RelativeFilename;
+            << _filepath;
       } else {
         return;
       }
     }
     diag(MatchedDecl->getLocation(),
          "'%0' does not match any directories in '%1'")
-        << MatchedDecl->getName() << RelativeFilename;
+        << MatchedDecl->getName() << _filepath;
   }
 }
 
