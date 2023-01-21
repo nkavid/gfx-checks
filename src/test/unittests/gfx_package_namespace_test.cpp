@@ -8,7 +8,20 @@ namespace clang {
 namespace tidy {
 namespace test {
 
-TEST(GFXModuleTest, PackageNamespaceCheck) {
+template <class T> static std::string getErrorString(const T &Errors) {
+  if (Errors.size() == 0) {
+    return "no errors";
+  }
+
+  std::string string{};
+  for (const auto &error : Errors) {
+    string = string + error.Message.Message + '\n';
+  }
+
+  return string;
+}
+
+TEST(GFXModuleTestPackageNamespaceCheck, AllowedOption) {
   using namespace clang::tidy::gfx;
 
   ClangTidyOptions Options;
@@ -31,11 +44,20 @@ TEST(GFXModuleTest, PackageNamespaceCheck) {
                                         &Errors, "wow/gfx/foo/bar.cpp", None,
                                         Options);
 
-  for (const auto &error : Errors) {
-    std::cout << error.Message.Message << '\n';
-  }
-
   EXPECT_EQ(0U, Errors.size());
+}
+
+TEST(GFXModuleTestPackageNamespaceCheck, IncorrectOrder) {
+  using namespace clang::tidy::gfx;
+
+  std::vector<ClangTidyError> Errors{};
+  runCheckOnCode<PackageNamespaceCheck>("namespace gfx::bar::foo\n"
+                                        "{\n"
+                                        "class Foo;\n"
+                                        "}\n",
+                                        &Errors, "gfx/foo/bar/baz.cpp");
+
+  EXPECT_EQ(0U, Errors.size()) << getErrorString(Errors);
 }
 
 } // namespace test
