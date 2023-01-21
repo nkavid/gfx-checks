@@ -49,13 +49,13 @@ function run()
     echo "link exists: '$LLVM_TEST_CHECKERS/gfx'"
   fi
 
-  LLVM_UNIT_TESTS=$LLVM_PROJECT/clang-tools-extra/unittests/clang-tidy/
-  GFX_MODULE_TEST_SUITE=$GFX_SOURCE/test/unittests/GFXModuleTest.cpp
+  LLVM_UNIT_TESTS=$LLVM_PROJECT/clang-tools-extra/unittests/clang-tidy
+  GFX_MODULE_TEST_SUITE=$GFX_SOURCE/test/unittests
 
-  if [ ! -L $LLVM_UNIT_TESTS/GFXModuleTest.cpp ]; then
+  if [ ! -L $LLVM_UNIT_TESTS/unittests ]; then
     ln -s $GFX_MODULE_TEST_SUITE $LLVM_UNIT_TESTS
   else
-    echo "link exists: '$LLVM_UNIT_TESTS/GFXModuleTest.cpp'"
+    echo "link exists: '$LLVM_UNIT_TESTS/unittests'"
   fi
 
   log "done!"
