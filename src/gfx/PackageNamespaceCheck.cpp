@@ -20,8 +20,8 @@ namespace gfx {
 
 PackageNamespaceCheck::PackageNamespaceCheck(StringRef Name,
                                              ClangTidyContext *Context)
-    : ClangTidyCheck(Name, Context),
-      _allowed(utils::options::parseStringList(Options.get("Allowed", ""))) {
+    : ClangTidyCheck(Name, Context), _allowed(utils::options::parseStringList(
+                                         Options.get("Allowed", "detail"))) {
   auto string = Context->getCurrentFile().str();
   auto loc = string.find("gfx/");
   _filepath = string.substr(loc, std::string::npos);
