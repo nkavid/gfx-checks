@@ -24,14 +24,11 @@ public:
   }
 };
 
-// Register the GFXTidyModule using this statically initialized variable.
 static ClangTidyModuleRegistry::Add<GFXTidyModule>
     X("gfx-module", "Adds gfx standards checks.");
 
 } // namespace gfx
 
-// This anchor is used to force the linker to link in the generated object file
-// and thus register the GFXTidyModule.
 volatile int GFXModuleAnchorSource = 0;
 
 } // namespace tidy

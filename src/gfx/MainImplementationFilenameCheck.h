@@ -15,7 +15,6 @@ namespace clang {
 namespace tidy {
 namespace gfx {
 
-/// Checks all llvm-libc implementation is within the correct namespace.
 class MainImplementationFilenameCheck : public ClangTidyCheck {
 public:
   MainImplementationFilenameCheck(StringRef Name, ClangTidyContext *Context);

@@ -18,7 +18,6 @@ namespace clang {
 namespace tidy {
 namespace gfx {
 
-/// Checks all llvm-libc implementation is within the correct namespace.
 class ClassCohesionCheck : public ClangTidyCheck {
 public:
   ClassCohesionCheck(StringRef Name, ClangTidyContext *Context);
