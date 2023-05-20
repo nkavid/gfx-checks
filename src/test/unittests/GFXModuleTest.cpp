@@ -39,7 +39,7 @@ TEST(GFXModuleTest, MainSuffixOption) {
 
   std::vector<ClangTidyError> Errors{};
   runCheckOnCode<MainImplementationFilenameCheck>(
-      "int main() {}", &Errors, "foo/bar_main.cpp", None, Options);
+      "int main() {}", &Errors, "foo/bar_main.cpp", std::nullopt, Options);
 
   EXPECT_EQ(0U, Errors.size());
 }
@@ -72,7 +72,7 @@ TEST(GFXModuleTest, ClassCohesion) {
                                      "  int a{1};\n"
                                      "  int b{1};\n"
                                      "};\n",
-                                     &Errors, "foo/bar.cpp", None, Options);
+                                     &Errors, "foo/bar.cpp", std::nullopt, Options);
 
   EXPECT_EQ(3U, Errors.size());
 }

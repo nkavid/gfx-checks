@@ -41,7 +41,7 @@ TEST(GFXModuleTestPackageNamespaceCheck, AllowedOption) {
                                         "}\n"
                                         "}\n"
                                         "}\n",
-                                        &Errors, "wow/gfx/foo/bar.cpp", None,
+                                        &Errors, "wow/gfx/foo/bar.cpp", std::nullopt,
                                         Options);
 
   EXPECT_EQ(0U, Errors.size());
