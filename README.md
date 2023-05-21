@@ -32,34 +32,32 @@ make ClangTidyTests
 --gtest_filter="GFXModuleTest.*"
 ```
 
-Changes in file `clang-tools-extra/clang-tidy/CMakeLists.txt`
-
-```diff
-+set(GFX_CLANG_TIDY_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
-+add_subdirectory(gfx)
-```
-in `set(ALL_CLANG_TIDY_CHECKS [...]` specifically
-```diff
-+  clangTidyGFXModule
-```
-
-Changes in `clang-tools-extra/clang-tidy/ClangTidyForceLinker.h`
-```diff
-+
-+// This anchor is used to force the linker to link the GFXModule.
-+extern volatile int GFXModuleAnchorSource;
-+static int LLVM_ATTRIBUTE_UNUSED GFXModuleAnchorDestination =
-+    GFXModuleAnchorSource;
-```
-
 Changes in `clang-tools-extra/unittests/clang-tidy/CMakeLists.txt`
 ```diff
-# in add_extra_unittest(ClangTidyTests [...]
-+  GFXModuleTest.cpp
-```
-```diff
-# in target_link_libraries(ClangTidyTests [...]
-+  clangTidyGFXModule
+# [...]
+
++ add_subdirectory(gfx)
++ gfx_print_info()
+
+# [...]
+
+add_extra_unittest(ClangTidyTests
++  ${GFX_MODULE_UNIT_TESTS}
+  AddConstTest.cpp
+
+# [...]
+
++target_include_directories(ClangTidyTests PRIVATE
++  ${GFX_MODULE_INCLUDE_PATH}
++)
+
+
+target_link_libraries(ClangTidyTests
+  PRIVATE
++  ${GFX_MODULE_LIBRARY}
+  clangTidy
+
+# [...]
 ```
 
 ## Load plugin
