@@ -1,9 +1,10 @@
-#include "clang-tidy/ClangTidyModule.h"
-#include "clang-tidy/ClangTidyModuleRegistry.h"
-#include "ClassCohesionCheck.h"
-#include "ImplementationInNamespaceCheck.h"
-#include "MainImplementationFilenameCheck.h"
-#include "PackageNamespaceCheck.h"
+#include "gfx/ClassCohesionCheck.h"
+#include "gfx/ImplementationInNamespaceCheck.h"
+#include "gfx/MainImplementationFilenameCheck.h"
+#include "gfx/PackageNamespaceCheck.h"
+
+#include <clang-tidy/ClangTidyModule.h>
+#include <clang-tidy/ClangTidyModuleRegistry.h>
 
 namespace clang {
 namespace tidy {

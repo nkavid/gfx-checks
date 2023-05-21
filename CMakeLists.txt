@@ -29,6 +29,10 @@ target_sources(gfx_checks PRIVATE
   src/gfx/PackageNamespaceCheck.cpp
 )
 
+target_include_directories(gfx_checks PRIVATE
+  src/gfx/include
+)
+
 target_include_directories(gfx_checks SYSTEM PRIVATE
   ${CLANG_INCLUDE_DIRS}
   ${LLVM_INCLUDE_DIRS}

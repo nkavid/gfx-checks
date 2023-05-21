@@ -7,10 +7,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "MainImplementationFilenameCheck.h"
-#include "clang-tidy/utils/OptionsUtils.h"
-#include "clang/AST/ASTContext.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
+#include "gfx/MainImplementationFilenameCheck.h"
+
+#include <clang-tidy/utils/OptionsUtils.h>
+#include <clang/AST/ASTContext.h>
+#include <clang/ASTMatchers/ASTMatchFinder.h>
 
 using namespace clang::ast_matchers;
 

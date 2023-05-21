@@ -7,10 +7,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "ClassCohesionCheck.h"
-#include "clang-tidy/utils/OptionsUtils.h"
-#include "clang/AST/ASTContext.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
+#include "gfx/ClassCohesionCheck.h"
+
+#include <clang-tidy/utils/OptionsUtils.h>
+#include <clang/AST/ASTContext.h>
+#include <clang/ASTMatchers/ASTMatchFinder.h>
 
 using namespace clang::ast_matchers;
 

@@ -6,11 +6,12 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "PackageNamespaceCheck.h"
-#include "clang-tidy/utils/OptionsUtils.h"
-#include "clang/AST/ASTContext.h"
-#include "clang/AST/Decl.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
+#include "gfx/PackageNamespaceCheck.h"
+
+#include <clang-tidy/utils/OptionsUtils.h>
+#include <clang/AST/ASTContext.h>
+#include <clang/AST/Decl.h>
+#include <clang/ASTMatchers/ASTMatchFinder.h>
 
 using namespace clang::ast_matchers;
 
