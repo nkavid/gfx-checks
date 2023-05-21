@@ -68,9 +68,9 @@ clang-tidy --checks="-*,gfx-*" \
   --list-checks
 ```
 
-## TODO
+## Checks
 
-- [x] top project namespace
+### gfx-implementation-in-namespace
 
 Imitate "llvmlibc-implementation-in-namespace"
 
@@ -79,19 +79,17 @@ namespace gfx//::...
 {
 ```
 
-- [x] also skip `main()` in namespace gfx
+Skip `main` definitions
 
-- [x] define `main()` in file named `main.cpp`
+### gfx-main-implementation-filename
 
-- [x] working unittest
+Define `main` in file named `main.cpp`
 
-- [x] define `main()` in file with suffix `_main`
+Added configuration option of `main` affix in filename: suffix, prefix
 
-- [x] add configuration option of `main` affix: suffix, prefix
+### gfx-experimental-package-namespace
 
-- [ ] nested package namespaces
-
-Match directory to namespace
+Match parent directories to namespace
 
 In file `/foo/bar/baz.hpp`
 
@@ -110,10 +108,18 @@ namespace bar
 //...
 ```
 
-`baz` may be class or namespace or function...
+`baz` may be class or namespace or function.
 
-- [ ] class cohesion
+### gfx-experimental-class-cohesion
 
-similar to this python checker?
+Similar to this python checker
 
 [flake8-cohesion](https://github.com/mschwager/cohesion)
+
+- [x] Check for private member usage in methods
+- [ ] Check for private method usage in methods
+
+Support cohesion metric for other stuff than class?
+
+- [ ] Check for local linkage declarations usage (constants, variables, functions, ...)
+
