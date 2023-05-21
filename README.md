@@ -64,8 +64,8 @@ target_link_libraries(ClangTidyTests
 
 ```bash
 clang-tidy --checks="-*,gfx-*" \
--load build/lib/libgfx_checks.so \
---list-checks
+  -load build/lib/libgfx_checks.so \
+  --list-checks
 ```
 
 ## TODO
