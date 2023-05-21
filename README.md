@@ -62,6 +62,14 @@ Changes in `clang-tools-extra/unittests/clang-tidy/CMakeLists.txt`
 +  clangTidyGFXModule
 ```
 
+## Load plugin
+
+```bash
+clang-tidy --checks="-*,gfx-*" \
+-load build/lib/libgfx_checks.so \
+--list-checks
+```
+
 ## TODO
 
 - [x] top project namespace

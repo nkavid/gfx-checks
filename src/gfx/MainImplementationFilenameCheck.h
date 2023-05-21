@@ -9,7 +9,7 @@
 #ifndef GFX_CHECKS_SRC_GFX_MAINIMPLEMENTATIONFILENAMECHECK_H
 #define GFX_CHECKS_SRC_GFX_MAINIMPLEMENTATIONFILENAMECHECK_H
 
-#include "ClangTidyCheck.h"
+#include "clang-tidy/ClangTidyCheck.h"
 
 namespace clang {
 namespace tidy {

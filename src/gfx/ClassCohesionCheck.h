@@ -9,7 +9,7 @@
 #ifndef GFX_CHECKS_SRC_GFX_CLASSCOHESIONCHECK_H
 #define GFX_CHECKS_SRC_GFX_CLASSCOHESIONCHECK_H
 
-#include "ClangTidyCheck.h"
+#include "clang-tidy/ClangTidyCheck.h"
 
 #include <map>
 #include <vector>

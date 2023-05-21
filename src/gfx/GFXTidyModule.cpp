@@ -1,6 +1,5 @@
-#include "ClangTidy.h"
-#include "ClangTidyModule.h"
-#include "ClangTidyModuleRegistry.h"
+#include "clang-tidy/ClangTidyModule.h"
+#include "clang-tidy/ClangTidyModuleRegistry.h"
 #include "ClassCohesionCheck.h"
 #include "ImplementationInNamespaceCheck.h"
 #include "MainImplementationFilenameCheck.h"
@@ -24,10 +23,10 @@ public:
   }
 };
 
-static ClangTidyModuleRegistry::Add<GFXTidyModule>
-    X("gfx-module", "Adds gfx standards checks.");
-
 } // namespace gfx
+
+static ClangTidyModuleRegistry::Add<gfx::GFXTidyModule>
+    X("gfx-module", "Adds gfx standards checks.");
 
 volatile int GFXModuleAnchorSource = 0;
 

@@ -9,8 +9,8 @@
 #ifndef GFX_CHECKS_SRC_GFX_PACKAGENAMESPACECHECK_H
 #define GFX_CHECKS_SRC_GFX_PACKAGENAMESPACECHECK_H
 
-#include "ClangTidyCheck.h"
-#include "utils/OptionsUtils.h"
+#include "clang-tidy/ClangTidyCheck.h"
+#include "clang-tidy/utils/OptionsUtils.h"
 
 #include <string>
 

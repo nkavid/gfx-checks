@@ -7,7 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "PackageNamespaceCheck.h"
-#include "utils/OptionsUtils.h"
+#include "clang-tidy/utils/OptionsUtils.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/Decl.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
