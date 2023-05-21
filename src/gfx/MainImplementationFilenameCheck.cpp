@@ -9,56 +9,62 @@
 
 #include "gfx/MainImplementationFilenameCheck.h"
 
-#include <clang-tidy/utils/OptionsUtils.h>
 #include <clang/AST/ASTContext.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 
+#include <clang-tidy/utils/OptionsUtils.h>
+
 using namespace clang::ast_matchers;
 
-namespace clang {
-namespace tidy {
-namespace gfx {
+namespace clang::tidy::gfx
+{
 
 MainImplementationFilenameCheck::MainImplementationFilenameCheck(
-    StringRef Name, ClangTidyContext *Context)
-    : ClangTidyCheck(Name, Context),
-      Affixes(utils::options::parseStringList(Options.get("Affix", "none"))) {}
-
-void MainImplementationFilenameCheck::storeOptions(
-    ClangTidyOptions::OptionMap &Opts) {
-  Options.store(Opts, "Affix", utils::options::serializeStringList(Affixes));
+    StringRef Name,
+    ClangTidyContext* context)
+    : ClangTidyCheck(Name, context),
+      _affixes(utils::options::parseStringList(Options.get("Affix", "none")))
+{
 }
 
-void MainImplementationFilenameCheck::registerMatchers(MatchFinder *Finder) {
+void MainImplementationFilenameCheck::storeOptions(ClangTidyOptions::OptionMap& Opts)
+{
+  Options.store(Opts, "Affix", utils::options::serializeStringList(_affixes));
+}
+
+void MainImplementationFilenameCheck::registerMatchers(MatchFinder* Finder)
+{
   Finder->addMatcher(functionDecl(isMain()).bind("main"), this);
 }
 
-void MainImplementationFilenameCheck::check(
-    const MatchFinder::MatchResult &Result) {
-  const auto *MatchedDecl = Result.Nodes.getNodeAs<Decl>("main");
+void MainImplementationFilenameCheck::check(const MatchFinder::MatchResult& Result)
+{
+  const auto* MatchedDecl = Result.Nodes.getNodeAs<Decl>("main");
 
-  if (!Result.SourceManager->isInMainFile(MatchedDecl->getLocation())) {
+  if (!Result.SourceManager->isInMainFile(MatchedDecl->getLocation()))
+  {
     return;
   }
 
   auto FileName = Result.SourceManager->getFilename(MatchedDecl->getLocation());
 
-  if (std::find(Affixes.begin(), Affixes.end(), "none") != Affixes.end()) {
-    if (FileName.endswith("/main.cpp")) {
+  if (std::find(_affixes.begin(), _affixes.end(), "none") != _affixes.end())
+  {
+    if (FileName.endswith("/main.cpp"))
+    {
       return;
     }
   }
 
-  if (std::find(Affixes.begin(), Affixes.end(), "suffix") != Affixes.end()) {
-    if (FileName.endswith("_main.cpp")) {
+  if (std::find(_affixes.begin(), _affixes.end(), "suffix") != _affixes.end())
+  {
+    if (FileName.endswith("_main.cpp"))
+    {
       return;
     }
   }
 
-  diag(MatchedDecl->getLocation(),
-       "main definition must be in file with 'main' affix");
+  diag(MatchedDecl->getLocation(), "main definition must be in file with 'main' affix");
 }
 
-} // namespace gfx
-} // namespace tidy
 } // namespace clang

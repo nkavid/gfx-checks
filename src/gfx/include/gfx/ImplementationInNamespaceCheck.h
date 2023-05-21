@@ -6,29 +6,29 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef GFX_CHECKS_SRC_GFX_IMPLEMENTATIONINNAMESPACECHECK_H
-#define GFX_CHECKS_SRC_GFX_IMPLEMENTATIONINNAMESPACECHECK_H
+#pragma once
 
 #include "clang-tidy/ClangTidyCheck.h"
 
-namespace clang {
-namespace tidy {
-namespace gfx {
+namespace clang::tidy::gfx
+{
 
-class ImplementationInNamespaceCheck : public ClangTidyCheck {
-public:
-  ImplementationInNamespaceCheck(StringRef Name, ClangTidyContext *Context)
-      : ClangTidyCheck(Name, Context) {}
+class ImplementationInNamespaceCheck : public ClangTidyCheck
+{
+  public:
+    ImplementationInNamespaceCheck(StringRef name, ClangTidyContext* context)
+        : ClangTidyCheck(name, context)
+    {
+    }
 
-  bool isLanguageVersionSupported(const LangOptions &LangOpts) const override {
-    return LangOpts.CPlusPlus;
-  }
-  void registerMatchers(ast_matchers::MatchFinder *Finder) override;
-  void check(const ast_matchers::MatchFinder::MatchResult &Result) override;
+    [[nodiscard]] bool
+    isLanguageVersionSupported(const LangOptions& LangOpts) const override
+    {
+      return LangOpts.CPlusPlus;
+    }
+
+    void registerMatchers(ast_matchers::MatchFinder* Finder) override;
+    void check(const ast_matchers::MatchFinder::MatchResult& Result) override;
 };
 
-} // namespace gfx
-} // namespace tidy
 } // namespace clang
-
-#endif // GFX_CHECKS_SRC_GFX_IMPLEMENTATIONINNAMESPACECHECK_H

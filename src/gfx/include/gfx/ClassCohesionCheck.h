@@ -6,42 +6,40 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef GFX_CHECKS_SRC_GFX_CLASSCOHESIONCHECK_H
-#define GFX_CHECKS_SRC_GFX_CLASSCOHESIONCHECK_H
-
-#include "clang-tidy/ClangTidyCheck.h"
+#pragma once
 
 #include <map>
 #include <vector>
 
-namespace clang {
-namespace tidy {
-namespace gfx {
+#include "clang-tidy/ClangTidyCheck.h"
 
-class ClassCohesionCheck : public ClangTidyCheck {
-public:
-  ClassCohesionCheck(StringRef Name, ClangTidyContext *Context);
+namespace clang::tidy::gfx
+{
 
-  void storeOptions(ClangTidyOptions::OptionMap &Opts) override;
+class ClassCohesionCheck : public ClangTidyCheck
+{
+  public:
+    ClassCohesionCheck(StringRef Name, ClangTidyContext* context);
 
-  bool isLanguageVersionSupported(const LangOptions &LangOpts) const override {
-    return LangOpts.CPlusPlus;
-  }
-  void registerMatchers(ast_matchers::MatchFinder *Finder) override;
-  void check(const ast_matchers::MatchFinder::MatchResult &Result) override;
-  void onEndOfTranslationUnit() override;
+    void storeOptions(ClangTidyOptions::OptionMap& Opts) override;
 
-private:
-  std::map<const TypeDecl *, std::vector<const FieldDecl *>> allClassMembers;
-  std::map<const TypeDecl *, std::vector<const FunctionDecl *>> allClassMethods;
-  std::vector<const FunctionDecl *> Methods;
-  std::map<const FunctionDecl *, std::vector<const FieldDecl *>> usedMembers;
-  std::map<const FunctionDecl *, unsigned> methodScores;
-  const unsigned Score;
+    [[nodiscard]] bool
+    isLanguageVersionSupported(const LangOptions& LangOpts) const override
+    {
+      return LangOpts.CPlusPlus;
+    }
+
+    void registerMatchers(ast_matchers::MatchFinder* Finder) override;
+    void check(const ast_matchers::MatchFinder::MatchResult& Result) override;
+    void onEndOfTranslationUnit() override;
+
+  private:
+    std::map<const TypeDecl*, std::vector<const FieldDecl*>> _allClassMembers{};
+    std::map<const TypeDecl*, std::vector<const FunctionDecl*>> _allClassMethods{};
+    std::vector<const FunctionDecl*> _methods{};
+    std::map<const FunctionDecl*, std::vector<const FieldDecl*>> _usedMembers{};
+    std::map<const FunctionDecl*, unsigned> _methodScores{};
+    unsigned _maxAllowedScore{};
 };
 
-} // namespace gfx
-} // namespace tidy
 } // namespace clang
-
-#endif // GFX_CHECKS_SRC_GFX_CLASSCOHESIONCHECK_H

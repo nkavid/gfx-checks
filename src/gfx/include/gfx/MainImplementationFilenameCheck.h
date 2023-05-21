@@ -6,33 +6,31 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef GFX_CHECKS_SRC_GFX_MAINIMPLEMENTATIONFILENAMECHECK_H
-#define GFX_CHECKS_SRC_GFX_MAINIMPLEMENTATIONFILENAMECHECK_H
+#pragma once
 
 #include "clang-tidy/ClangTidyCheck.h"
 
-namespace clang {
-namespace tidy {
-namespace gfx {
+namespace clang::tidy::gfx
+{
 
-class MainImplementationFilenameCheck : public ClangTidyCheck {
-public:
-  MainImplementationFilenameCheck(StringRef Name, ClangTidyContext *Context);
+class MainImplementationFilenameCheck : public ClangTidyCheck
+{
+  public:
+    MainImplementationFilenameCheck(StringRef Name, ClangTidyContext* context);
 
-  void storeOptions(ClangTidyOptions::OptionMap &Opts) override;
+    void storeOptions(ClangTidyOptions::OptionMap& Opts) override;
 
-  bool isLanguageVersionSupported(const LangOptions &LangOpts) const override {
-    return LangOpts.CPlusPlus;
-  }
-  void registerMatchers(ast_matchers::MatchFinder *Finder) override;
-  void check(const ast_matchers::MatchFinder::MatchResult &Result) override;
+    [[nodiscard]] bool
+    isLanguageVersionSupported(const LangOptions& LangOpts) const override
+    {
+      return LangOpts.CPlusPlus;
+    }
 
-private:
-  std::vector<StringRef> Affixes;
+    void registerMatchers(ast_matchers::MatchFinder* Finder) override;
+    void check(const ast_matchers::MatchFinder::MatchResult& Result) override;
+
+  private:
+    std::vector<StringRef> _affixes;
 };
 
-} // namespace gfx
-} // namespace tidy
 } // namespace clang
-
-#endif // GFX_CHECKS_SRC_GFX_MAINIMPLEMENTATIONFILENAMECHECK_H

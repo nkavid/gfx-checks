@@ -4,24 +4,32 @@
 
 #include <iostream>
 
-namespace clang {
-namespace tidy {
-namespace test {
+namespace clang
+{
+namespace tidy
+{
+namespace test
+{
 
-template <class T> static std::string getErrorString(const T &Errors) {
-  if (Errors.size() == 0) {
+template <class T>
+static std::string getErrorString(const T& Errors)
+{
+  if (Errors.size() == 0)
+  {
     return "no errors";
   }
 
   std::string string{};
-  for (const auto &error : Errors) {
+  for (const auto& error : Errors)
+  {
     string = string + error.Message.Message + '\n';
   }
 
   return string;
 }
 
-TEST(GFXModuleTestPackageNamespaceCheck, AllowedOption) {
+TEST(GFXModuleTestPackageNamespaceCheck, AllowedOption)
+{
   using namespace clang::tidy::gfx;
 
   ClangTidyOptions Options;
@@ -41,13 +49,16 @@ TEST(GFXModuleTestPackageNamespaceCheck, AllowedOption) {
                                         "}\n"
                                         "}\n"
                                         "}\n",
-                                        &Errors, "wow/gfx/foo/bar.cpp", std::nullopt,
+                                        &Errors,
+                                        "wow/gfx/foo/bar.cpp",
+                                        std::nullopt,
                                         Options);
 
   EXPECT_EQ(0U, Errors.size());
 }
 
-TEST(GFXModuleTestPackageNamespaceCheck, IncorrectOrder) {
+TEST(GFXModuleTestPackageNamespaceCheck, IncorrectOrder)
+{
   using namespace clang::tidy::gfx;
 
   std::vector<ClangTidyError> Errors{};
@@ -55,7 +66,8 @@ TEST(GFXModuleTestPackageNamespaceCheck, IncorrectOrder) {
                                         "{\n"
                                         "class Foo;\n"
                                         "}\n",
-                                        &Errors, "gfx/foo/bar/baz.cpp");
+                                        &Errors,
+                                        "gfx/foo/bar/baz.cpp");
 
   EXPECT_EQ(0U, Errors.size()) << getErrorString(Errors);
 }

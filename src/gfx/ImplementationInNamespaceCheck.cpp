@@ -13,45 +13,48 @@
 
 using namespace clang::ast_matchers;
 
-namespace clang {
-namespace tidy {
-namespace gfx {
+namespace clang::tidy::gfx
+{
 
-const static StringRef RequiredNamespace = "gfx";
-void ImplementationInNamespaceCheck::registerMatchers(MatchFinder *Finder) {
-  Finder->addMatcher(
-      decl(hasParent(translationUnitDecl()), unless(linkageSpecDecl()))
-          .bind("child_of_translation_unit"),
-      this);
+constexpr static StringRef g_RequiredNamespace{"gfx"};
+
+void ImplementationInNamespaceCheck::registerMatchers(MatchFinder* Finder)
+{
+  Finder->addMatcher(decl(hasParent(translationUnitDecl()), unless(linkageSpecDecl()))
+                         .bind("child_of_translation_unit"),
+                     this);
 }
 
-void ImplementationInNamespaceCheck::check(
-    const MatchFinder::MatchResult &Result) {
-  const auto *MatchedDecl =
-      Result.Nodes.getNodeAs<Decl>("child_of_translation_unit");
+void ImplementationInNamespaceCheck::check(const MatchFinder::MatchResult& Result)
+{
+  const auto* matchedDecl = Result.Nodes.getNodeAs<Decl>("child_of_translation_unit");
 
-  if (!Result.SourceManager->isInMainFile(MatchedDecl->getLocation()))
+  if (!Result.SourceManager->isInMainFile(matchedDecl->getLocation()))
+  {
     return;
+  }
 
-  if (const auto *NS = dyn_cast<NamespaceDecl>(MatchedDecl)) {
-    if (NS->getName() != RequiredNamespace) {
-      diag(NS->getLocation(), "'%0' needs to be the outermost namespace")
-          << RequiredNamespace;
+  if (const auto* namespaceDecl = dyn_cast<NamespaceDecl>(matchedDecl))
+  {
+    if (namespaceDecl->getName() != g_RequiredNamespace)
+    {
+      diag(namespaceDecl->getLocation(), "'%0' needs to be the outermost namespace")
+          << g_RequiredNamespace;
     }
     return;
   }
 
-  if (const auto *ND = dyn_cast<NamedDecl>(MatchedDecl)) {
-    if (ND->getName() == "main") {
+  if (const auto* namedDecl = dyn_cast<NamedDecl>(matchedDecl))
+  {
+    if (namedDecl->getName() == "main")
+    {
       return;
     }
   }
 
-  diag(MatchedDecl->getLocation(),
+  diag(matchedDecl->getLocation(),
        "declaration must be declared within the '%0' namespace")
-      << RequiredNamespace;
+      << g_RequiredNamespace;
 }
 
-} // namespace gfx
-} // namespace tidy
 } // namespace clang

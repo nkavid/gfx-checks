@@ -6,6 +6,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/cmake/gcc_toolchain.cmake")
+
 set(CMAKE_CXX_STANDARD 17)
 
 project(gfx-checks
@@ -17,24 +19,57 @@ project(gfx-checks
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
 
+function(gfx_tidy_object)
+  set(one_value_args OBJECT)
+  set(multi_value_args SOURCES OPTIONS)
+  cmake_parse_arguments(GFX_TIDY
+    ""
+    "${one_value_args}"
+    "${multi_value_args}"
+    ${ARGN}
+  )
+
+  add_library(${GFX_TIDY_OBJECT} OBJECT 
+    ${GFX_TIDY_SOURCES}
+  )
+
+  target_compile_options(${GFX_TIDY_OBJECT} PRIVATE
+    ${GFX_TIDY_OPTIONS}
+    "-fPIC"
+    "-fno-rtti"
+  )
+
+  target_include_directories(${GFX_TIDY_OBJECT} PRIVATE
+    "src/gfx/include"
+  )
+
+endfunction()
+
+gfx_tidy_object(
+  OBJECT
+    "gfxTidyModule"
+  SOURCES
+    "src/gfx/GFXTidyModule.cpp"
+  OPTIONS
+    "-Wno-weak-vtables"
+    "-Wno-global-constructors"
+    "-Wno-missing-variable-declarations"
+)
+
+gfx_tidy_object(
+  OBJECT
+    "gfxTidyChecks"
+  SOURCES
+    "src/gfx/ClassCohesionCheck.cpp"
+    "src/gfx/ImplementationInNamespaceCheck.cpp"
+    "src/gfx/MainImplementationFilenameCheck.cpp"
+    "src/gfx/PackageNamespaceCheck.cpp"
+)
+
 add_library(gfx_checks SHARED)
 
-target_compile_options(gfx_checks PRIVATE -fno-rtti)
-
 target_sources(gfx_checks PRIVATE
-  src/gfx/GFXTidyModule.cpp
-  src/gfx/ClassCohesionCheck.cpp
-  src/gfx/ImplementationInNamespaceCheck.cpp
-  src/gfx/MainImplementationFilenameCheck.cpp
-  src/gfx/PackageNamespaceCheck.cpp
-)
-
-target_include_directories(gfx_checks PRIVATE
-  src/gfx/include
-)
-
-target_include_directories(gfx_checks SYSTEM PRIVATE
-  ${CLANG_INCLUDE_DIRS}
-  ${LLVM_INCLUDE_DIRS}
+  $<TARGET_OBJECTS:gfxTidyModule>
+  $<TARGET_OBJECTS:gfxTidyChecks>
 )
 

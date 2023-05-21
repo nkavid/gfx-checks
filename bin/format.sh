@@ -19,4 +19,3 @@ function format()
 
 format src/gfx/
 format src/test/unittests/
-format src/test/code/

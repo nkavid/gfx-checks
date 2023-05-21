@@ -6,30 +6,33 @@
 #include <clang-tidy/ClangTidyModule.h>
 #include <clang-tidy/ClangTidyModuleRegistry.h>
 
-namespace clang {
-namespace tidy {
-namespace gfx {
-
-class GFXTidyModule : public ClangTidyModule {
-public:
-  void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
-    CheckFactories.registerCheck<ImplementationInNamespaceCheck>(
-        "gfx-implementation-in-namespace");
-    CheckFactories.registerCheck<MainImplementationFilenameCheck>(
-        "gfx-main-implementation-filename");
-    CheckFactories.registerCheck<ClassCohesionCheck>(
-        "gfx-experimental-class-cohesion");
-    CheckFactories.registerCheck<PackageNamespaceCheck>(
-        "gfx-experimental-package-namespace");
-  }
+namespace clang::tidy
+{
+namespace gfx
+{
+class GFXTidyModule : public ClangTidyModule
+{
+  public:
+    void addCheckFactories(ClangTidyCheckFactories& CheckFactories) override
+    {
+      CheckFactories.registerCheck<ImplementationInNamespaceCheck>(
+          "gfx-implementation-in-namespace");
+      CheckFactories.registerCheck<MainImplementationFilenameCheck>(
+          "gfx-main-implementation-filename");
+      CheckFactories.registerCheck<ClassCohesionCheck>(
+          "gfx-experimental-class-cohesion");
+      CheckFactories.registerCheck<PackageNamespaceCheck>(
+          "gfx-experimental-package-namespace");
+    }
 };
 
 } // namespace gfx
 
-static ClangTidyModuleRegistry::Add<gfx::GFXTidyModule>
-    X("gfx-module", "Adds gfx standards checks.");
+// NOLINTBEGIN
+static ClangTidyModuleRegistry::Add<gfx::GFXTidyModule> X("gfx-module",
+                                                          "Adds gfx standards checks.");
 
-volatile int GFXModuleAnchorSource = 0;
+volatile int g_GFXModuleAnchorSource = 0;
+// NOLINTEND
 
-} // namespace tidy
 } // namespace clang

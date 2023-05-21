@@ -6,36 +6,33 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef GFX_CHECKS_SRC_GFX_PACKAGENAMESPACECHECK_H
-#define GFX_CHECKS_SRC_GFX_PACKAGENAMESPACECHECK_H
+#pragma once
+
+#include <string>
 
 #include "clang-tidy/ClangTidyCheck.h"
 #include "clang-tidy/utils/OptionsUtils.h"
 
-#include <string>
+namespace clang::tidy::gfx
+{
 
-namespace clang {
-namespace tidy {
-namespace gfx {
+class PackageNamespaceCheck : public ClangTidyCheck
+{
+  public:
+    PackageNamespaceCheck(StringRef Name, ClangTidyContext* context);
 
-class PackageNamespaceCheck : public ClangTidyCheck {
-public:
-  PackageNamespaceCheck(StringRef Name, ClangTidyContext *Context);
+    [[nodiscard]] bool
+    isLanguageVersionSupported(const LangOptions& LangOpts) const override
+    {
+      return LangOpts.CPlusPlus;
+    }
 
-  bool isLanguageVersionSupported(const LangOptions &LangOpts) const override {
-    return LangOpts.CPlusPlus;
-  }
+    void registerMatchers(ast_matchers::MatchFinder* Finder) override;
+    void check(const ast_matchers::MatchFinder::MatchResult& Result) override;
 
-  void registerMatchers(ast_matchers::MatchFinder *Finder) override;
-  void check(const ast_matchers::MatchFinder::MatchResult &Result) override;
-
-private:
-  std::string _filepath{};
-  std::vector<StringRef> _allowed{};
+  private:
+    std::string _filepath{};
+    std::vector<StringRef> _allowed{};
 };
 
-} // namespace gfx
-} // namespace tidy
 } // namespace clang
-
-#endif // GFX_CHECKS_SRC_GFX_PACKAGENAMESPACECHECK_H
