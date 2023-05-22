@@ -28,11 +28,11 @@ static std::string getErrorString(const T& Errors)
   return string;
 }
 
-TEST(GFXModuleTestPackageNamespaceCheck, AllowedOption)
+TEST(GFXModuleTest, AllowedOption)
 {
   using namespace clang::tidy::gfx;
 
-  ClangTidyOptions Options;
+  ClangTidyOptions Options{};
   Options.CheckOptions["test-check-0.Allowed"] = "wow";
 
   std::vector<ClangTidyError> Errors{};
@@ -57,7 +57,7 @@ TEST(GFXModuleTestPackageNamespaceCheck, AllowedOption)
   EXPECT_EQ(0U, Errors.size());
 }
 
-TEST(GFXModuleTestPackageNamespaceCheck, IncorrectOrder)
+TEST(GFXModuleTest, IncorrectOrder)
 {
   using namespace clang::tidy::gfx;
 
