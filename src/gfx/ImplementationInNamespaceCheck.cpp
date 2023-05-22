@@ -46,7 +46,7 @@ void ImplementationInNamespaceCheck::check(const MatchFinder::MatchResult& Resul
 
   if (const auto* namedDecl = dyn_cast<NamedDecl>(matchedDecl))
   {
-    if (namedDecl->getName() == "main")
+    if (namedDecl->getNameAsString() == "main")
     {
       return;
     }

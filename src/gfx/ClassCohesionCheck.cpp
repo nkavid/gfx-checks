@@ -147,8 +147,8 @@ void ClassCohesionCheck::onEndOfTranslationUnit()
       for (const auto* method : methods)
       {
         diag(method->getLocation(), "[%0 total %3] %0::%1() score %2")
-            << dyn_cast<NamedDecl>(method->getParent())->getName() << method->getName()
-            << _methodScores[method] << sum;
+            << dyn_cast<NamedDecl>(method->getParent())->getName()
+            << method->getNameInfo().getAsString() << _methodScores[method] << sum;
       }
     }
   }
