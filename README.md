@@ -110,6 +110,27 @@ namespace bar
 
 `baz` may be class or namespace or function.
 
+### gfx-basename-declaration
+
+Checks if basename of header file matches declaration names. Does not check if implementation file.
+
+```cpp
+// Examples in file foo_bar_baz.hpp
+namespace foo_bar_baz
+{
+
+// or
+
+T FooBarBaz;
+
+// or
+
+void fooBarBaz();
+//...
+```
+
+Converts names from snake_case and then lowercase. Exact matches of configurable cases not informative and I want to keep acronyms all lowercase or uppercase.
+
 ### gfx-experimental-class-cohesion
 
 Similar to this python checker

@@ -1,3 +1,4 @@
+#include "gfx/BasenameDeclarationCheck.h"
 #include "gfx/ClassCohesionCheck.h"
 #include "gfx/ImplementationInNamespaceCheck.h"
 #include "gfx/MainImplementationFilenameCheck.h"
@@ -23,6 +24,8 @@ class GFXTidyModule : public ClangTidyModule
           "gfx-experimental-class-cohesion");
       CheckFactories.registerCheck<PackageNamespaceCheck>(
           "gfx-experimental-package-namespace");
+      CheckFactories.registerCheck<BasenameDeclarationCheck>(
+          "gfx-basename-declaration");
     }
 };
 
