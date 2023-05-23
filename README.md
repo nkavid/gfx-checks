@@ -51,7 +51,6 @@ add_extra_unittest(ClangTidyTests
 +  ${GFX_MODULE_INCLUDE_PATH}
 +)
 
-
 target_link_libraries(ClangTidyTests
   PRIVATE
 +  ${GFX_MODULE_LIBRARY}
@@ -59,6 +58,11 @@ target_link_libraries(ClangTidyTests
 
 # [...]
 ```
+
+Enable `find_package(REQUIRED)` instead of `gfx_print_info()`.
+- [ ] Fix cmake install to simplify integration with both "llvm-project" and "sandbox-gfx".
+- [ ] CMake `COMPONENT` GFXTidyTestSource as `INTERFACE FILE_SET`?
+- [ ] Why do I want to compile and run other module unit tests? :(
 
 ## Load plugin
 
@@ -68,7 +72,13 @@ clang-tidy --checks="-*,gfx-*" \
   --list-checks
 ```
 
+- [ ] Add as custom command to `ALL` with dependency to GFXTidy? Only if installing?
+
 ## Checks
+
+- [ ] Remove copyright scripting
+- [ ] Add copyright scripting
+In that order!
 
 ### gfx-implementation-in-namespace
 
