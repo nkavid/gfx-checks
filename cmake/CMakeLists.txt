@@ -2,6 +2,7 @@ set(GFX_MODULE_UNIT_TESTS
   "${CMAKE_CURRENT_LIST_DIR}/unittests/GFXModuleTest.cpp"
   "${CMAKE_CURRENT_LIST_DIR}/unittests/gfx_package_namespace_test.cpp"
   "${CMAKE_CURRENT_LIST_DIR}/unittests/gfx_basename_declaration_test.cpp"
+  "${CMAKE_CURRENT_LIST_DIR}/unittests/gfx_fundamental_type_test.cpp"
   PARENT_SCOPE
 )
 

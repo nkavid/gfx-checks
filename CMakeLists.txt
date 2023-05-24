@@ -65,6 +65,7 @@ gfx_tidy_object(
     "src/gfx/MainImplementationFilenameCheck.cpp"
     "src/gfx/PackageNamespaceCheck.cpp"
     "src/gfx/BasenameDeclarationCheck.cpp"
+    "src/gfx/FundamentalTypeCheck.cpp"
 )
 
 add_library(gfx_checks SHARED)

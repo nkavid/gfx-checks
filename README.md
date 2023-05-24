@@ -142,6 +142,30 @@ void fooBarBaz();
 
 Converts names from snake_case and then lowercase. Exact matches of configurable cases not informative and I want to keep acronyms all lowercase or uppercase.
 
+### gfx-fundamental-type
+
+Intended to be used in "applications" and more integrating components to enforce reliance on abstractions and to identify if an abstraction is not working or missing.
+
+String literals not found. Integer literals also but these are magic numbers though? Use strongly typed instead of stringly typed interfaces. *Finish* parsing configurations and options in config utility components and forward *structured parametrized data* to instead of soft weaksauce strings.
+
+Ignores cv qualifier on type and flags `const` qualified variables.
+
+```cpp
+// Examples of disallowed signatures
+/* built-ins */
+float floatVar;
+uint32_t intVar; // is 'unsigned int'
+bool boolVar;    // Allow or prefer enums?
+
+/* strings */
+std::string stringVar;
+char* charPtr;
+```
+
+`argc` and `argv` should be forwarded to some CLI argument parser component. `argv` not identified as a `char*` but fine for now because "unsafe buffer usage" and c-style pointer and arrays checkers expose this.
+
+Consider a strongly typed and strongly checked `main` definition wrapper? [C++ Weekly: Is a better 'main' possible?](https://www.youtube.com/watch?v=zCzD9uSDI8c)
+
 ### gfx-experimental-class-cohesion
 
 Similar to this python checker

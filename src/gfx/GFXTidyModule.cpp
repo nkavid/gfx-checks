@@ -1,5 +1,6 @@
 #include "gfx/BasenameDeclarationCheck.h"
 #include "gfx/ClassCohesionCheck.h"
+#include "gfx/FundamentalTypeCheck.h"
 #include "gfx/ImplementationInNamespaceCheck.h"
 #include "gfx/MainImplementationFilenameCheck.h"
 #include "gfx/PackageNamespaceCheck.h"
@@ -26,6 +27,7 @@ class GFXTidyModule : public ClangTidyModule
           "gfx-experimental-package-namespace");
       CheckFactories.registerCheck<BasenameDeclarationCheck>(
           "gfx-basename-declaration");
+      CheckFactories.registerCheck<FundamentalTypeCheck>("gfx-fundamental-type");
     }
 };
 
