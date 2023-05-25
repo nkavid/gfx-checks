@@ -1,6 +1,6 @@
-# gfx-checks
+# :do_not_litter: GFXTidy
 
-clang-tidy checks for gfx repository
+> Clang-tidy plugin for sandbox-gfx
 
 ## Build
 
@@ -75,13 +75,17 @@ clang-tidy --checks="-*,gfx-*" \
 
 - [ ] Add as custom command to `ALL` with dependency to GFXTidy? Only if installing?
 
-## Checks
+# Checks
 
-- [ ] Remove copyright scripting
-- [ ] Add copyright scripting
-In that order!
+- [gfx-implementation-in-namespace](#gfx-implementation-in-namespace)
+- [gfx-main-implementation-filename](#gfx-main-implementation-filename)
+- [gfx-basename-declaration](#gfx-basename-declaration)
+- [gfx-fundamental-type](#gfx-fundamental-type)
+- [gfx-experimental-package-namespace](#gfx-experimental-package-namespace)
+- [gfx-experimental-class-cohesion](#gfx-experimental-class-cohesion)
 
-### gfx-implementation-in-namespace
+
+## gfx-implementation-in-namespace
 
 Imitate "llvmlibc-implementation-in-namespace"
 
@@ -92,36 +96,15 @@ namespace gfx//::...
 
 Skip `main` definitions
 
-### gfx-main-implementation-filename
+
+## gfx-main-implementation-filename
 
 Define `main` in file named `main.cpp`
 
 Added configuration option of `main` affix in filename: suffix, prefix
 
-### gfx-experimental-package-namespace
 
-Match parent directories to namespace
-
-In file `/foo/bar/baz.hpp`
-
-```cpp
-namespace gfx::foo::bar
-{
-
-// and
-
-namespace gfx
-{
-namespace foo
-{
-namespace bar
-{
-//...
-```
-
-`baz` may be class or namespace or function.
-
-### gfx-basename-declaration
+## gfx-basename-declaration
 
 Checks if basename of header file matches declaration names. Does not check if implementation file.
 
@@ -142,7 +125,8 @@ void fooBarBaz();
 
 Converts names from snake_case and then lowercase. Exact matches of configurable cases not informative and I want to keep acronyms all lowercase or uppercase.
 
-### gfx-fundamental-type
+
+## gfx-fundamental-type
 
 Intended to be used in "applications" and more integrating components to enforce reliance on abstractions and to identify if an abstraction is not working or missing.
 
@@ -166,7 +150,31 @@ char* charPtr;
 
 Consider a strongly typed and strongly checked `main` definition wrapper? [C++ Weekly: Is a better 'main' possible?](https://www.youtube.com/watch?v=zCzD9uSDI8c)
 
-### gfx-experimental-class-cohesion
+
+## gfx-experimental-package-namespace
+
+Match parent directories to namespace
+
+In file `/foo/bar/baz.hpp`
+
+```cpp
+namespace gfx::foo::bar
+{
+
+// and
+
+namespace gfx
+{
+namespace foo
+{
+namespace bar
+{
+//...
+```
+
+`baz` may be class or namespace or function.
+
+## gfx-experimental-class-cohesion
 
 Similar to this python checker
 
@@ -178,4 +186,5 @@ Similar to this python checker
 Support cohesion metric for other stuff than class?
 
 - [ ] Check for local linkage declarations usage (constants, variables, functions, ...)
+
 
