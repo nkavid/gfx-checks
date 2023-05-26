@@ -65,10 +65,12 @@ static void traverse(const TypeDecl* parent,
   {
     return;
   }
+
   if (parent == nullptr)
   {
     return;
   }
+
   const auto children = statement->children();
   if (children.empty())
   {
@@ -81,6 +83,7 @@ static void traverse(const TypeDecl* parent,
     {
       continue;
     }
+
     if (child->getStmtClass() == Stmt::MemberExprClass)
     {
       const auto* member = dyn_cast<MemberExpr>(child)->getMemberDecl();
@@ -92,6 +95,7 @@ static void traverse(const TypeDecl* parent,
         }
       }
     }
+
     traverse(parent, child, members);
   }
 }

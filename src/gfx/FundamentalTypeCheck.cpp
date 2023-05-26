@@ -43,7 +43,7 @@ void FundamentalTypeCheck::registerMatchers(ast_matchers::MatchFinder* Finder)
 void FundamentalTypeCheck::check(const ast_matchers::MatchFinder::MatchResult& Result)
 {
   const auto* matchedBuiltin = Result.Nodes.getNodeAs<VarDecl>("builtin");
-  if (matchedBuiltin)
+  if (matchedBuiltin != nullptr)
   {
     if (!Result.SourceManager->isInMainFile(matchedBuiltin->getLocation()))
     {
@@ -59,7 +59,7 @@ void FundamentalTypeCheck::check(const ast_matchers::MatchFinder::MatchResult& R
   }
 
   const auto* matchedString = Result.Nodes.getNodeAs<VarDecl>("string");
-  if (matchedString)
+  if (matchedString != nullptr)
   {
     if (!Result.SourceManager->isInMainFile(matchedString->getLocation()))
     {
@@ -71,7 +71,7 @@ void FundamentalTypeCheck::check(const ast_matchers::MatchFinder::MatchResult& R
   }
 
   const auto* matchedCharPtr = Result.Nodes.getNodeAs<VarDecl>("char-ptr");
-  if (matchedCharPtr)
+  if (matchedCharPtr != nullptr)
   {
     if (!Result.SourceManager->isInMainFile(matchedCharPtr->getLocation()))
     {

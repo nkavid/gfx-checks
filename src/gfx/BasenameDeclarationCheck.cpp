@@ -26,7 +26,7 @@ namespace
 {
 using utils::options::parseStringList;
 
-std::optional<naming::Case> getCase(std::vector<StringRef> parsedStringList)
+std::optional<naming::Case> getCase(const std::vector<StringRef>& parsedStringList)
 {
   StringRef caseOption{"aNy_CasE"};
 
@@ -39,11 +39,11 @@ std::optional<naming::Case> getCase(std::vector<StringRef> parsedStringList)
   {
     return naming::Case::snake_case;
   }
-  else if (caseOption == "CamelCase")
+  if (caseOption == "CamelCase")
   {
     return naming::Case::PascalCase;
   }
-  else if (caseOption == "camelBack")
+  if (caseOption == "camelBack")
   {
     return naming::Case::camelCase;
   }
@@ -53,36 +53,44 @@ std::optional<naming::Case> getCase(std::vector<StringRef> parsedStringList)
 
 void convertString(std::string& input, naming::Case namingCase)
 {
-  auto toLowerLambda = [](unsigned char c) { return std::tolower(c); };
+  constexpr auto toLowerLambda = [](unsigned char character) {
+    return std::tolower(character);
+  };
+
   if (namingCase == naming::Case::snake_case)
   {
     input.erase(std::remove(input.begin(), input.end(), '_'), input.end());
   }
+
   std::transform(input.begin(), input.end(), input.begin(), toLowerLambda);
 }
 
-bool match(const std::filesystem::path& filename,
-           const NamedDecl* namedDecl,
-           const naming::Map& namingMap)
+bool findAnyMatch(const std::filesystem::path& filename,
+                  const std::vector<const NamedDecl*>& namedDecls,
+                  const naming::Map& namingMap)
 {
-  auto basename = filename.stem().filename().string();
-  convertString(basename, namingMap.at(naming::Declaration::File));
-
-  if (auto* namespaceDecl = dyn_cast<NamespaceDecl>(namedDecl))
+  bool foundAnyMatch{false};
+  for (const auto* namedDecl : namedDecls)
   {
-    auto nsStr = namespaceDecl->getNameAsString();
-    convertString(nsStr, namingMap.at(naming::Declaration::Namespace));
-    return basename == nsStr;
+    auto basename = filename.stem().filename().string();
+    convertString(basename, namingMap.at(naming::Declaration::File));
+
+    if (const auto* namespaceDecl = dyn_cast<NamespaceDecl>(namedDecl))
+    {
+      auto nsStr = namespaceDecl->getNameAsString();
+      convertString(nsStr, namingMap.at(naming::Declaration::Namespace));
+      foundAnyMatch |= basename == nsStr;
+    }
+
+    if (const auto* typeDecl = dyn_cast<TypeDecl>(namedDecl))
+    {
+      auto typeName = typeDecl->getNameAsString();
+      convertString(typeName, namingMap.at(naming::Declaration::Type));
+      foundAnyMatch |= basename == typeName;
+    }
   }
 
-  if (auto* typeDecl = dyn_cast<TypeDecl>(namedDecl))
-  {
-    auto typeName = typeDecl->getNameAsString();
-    convertString(typeName, namingMap.at(naming::Declaration::Type));
-    return basename == typeName;
-  }
-
-  return false;
+  return foundAnyMatch;
 }
 }
 
@@ -143,19 +151,12 @@ void BasenameDeclarationCheck::check(const MatchFinder::MatchResult& Result)
   _foundDeclarationsPerFile[file].emplace_back(matchedDecl);
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 void BasenameDeclarationCheck::onEndOfTranslationUnit()
 {
   for (const auto& [filename, namedDecls] : _foundDeclarationsPerFile)
   {
-    bool foundAnyMatch = false;
-    for (const auto* namedDecl : namedDecls)
-    {
-      if (match(filename, namedDecl, _declarationCaseMap))
-      {
-        foundAnyMatch = true;
-      }
-    }
-    if (!foundAnyMatch)
+    if (!findAnyMatch(filename, namedDecls, _declarationCaseMap))
     {
       diag("Did not find declaration with name matching basename '%0' of '%1'")
           << StringRef{filename.filename().c_str()} << filename.c_str();
