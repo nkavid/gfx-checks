@@ -5,12 +5,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(GFX_CMAKE_CONFIG_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/cmake)
 
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/cmake/gcc_toolchain.cmake")
 
 set(CMAKE_CXX_STANDARD 17)
 
-project(gfx-checks
+project(GFXTidy
   DESCRIPTION "Checkers for clang-tidy used in gfx sandbox repository"
   VERSION 0.0.1
   LANGUAGES CXX C
@@ -68,10 +69,22 @@ gfx_tidy_object(
     "src/gfx/FundamentalTypeCheck.cpp"
 )
 
-add_library(gfx_checks SHARED)
+add_library(gfx_tidy_checks SHARED)
 
-target_sources(gfx_checks PRIVATE
+target_sources(gfx_tidy_checks PRIVATE
   $<TARGET_OBJECTS:gfxTidyModule>
   $<TARGET_OBJECTS:gfxTidyChecks>
 )
+
+install(CODE
+  "execute_process(COMMAND \
+    clang-tidy -load lib/libgfx_tidy_checks.so \
+    --checks=-*,gfx-* \
+    --list-checks)"
+)
+
+include(cmake/gfx_base_install.cmake)
+
+gfx_base_install_target(gfx_tidy_checks)
+gfx_base_install_finish()
 

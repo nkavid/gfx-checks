@@ -12,7 +12,7 @@ set(GFX_MODULE_INCLUDE_PATH
 )
 
 find_library(GFX_MODULE_LIBRARY
-  libgfx_checks.so
+  libgfx_tidy_checks.so
   PATH
     "${CMAKE_CURRENT_LIST_DIR}/lib"
 )
