@@ -1,6 +1,8 @@
 # :do_not_litter: GFXTidy
 
-> Clang-tidy plugin for sandbox-gfx
+> Snyggt byggt, fräsig sammanslagningsbegäran.
+
+Clang-tidy checkers used in [nkavid/sandbox-gfx](https://github.com/nkavid/sandbox-gfx).
 
 ## Build
 
@@ -28,8 +30,8 @@ same directory and `setup.sh` is called from this repo root.
 
 ```sh
 # make and run unit tests for gfx module
-make ClangTidyTests
-../build/tools/clang/tools/extra/unittests/clang-tidy/ClangTidyTests \
+make ClangTidyTests && \
+./tools/clang/tools/extra/unittests/clang-tidy/ClangTidyTests \
 --gtest_filter="GFXModuleTest.*"
 ```
 
@@ -61,7 +63,7 @@ target_link_libraries(ClangTidyTests
 ```
 
 Enable `find_package(REQUIRED)` instead of `gfx_print_info()`.
-- [ ] Fix cmake install to simplify integration with both "llvm-project" and "sandbox-gfx".
+- [x] Fix cmake install to simplify integration with both "llvm-project" and "sandbox-gfx".
 - [ ] CMake `COMPONENT` GFXTidyTestSource as `INTERFACE FILE_SET`?
 - [ ] Why do I want to compile and run other module unit tests? :(
 
@@ -73,9 +75,11 @@ clang-tidy --checks="-*,gfx-*" \
   --list-checks
 ```
 
-- [ ] Add as custom command to `ALL` with dependency to GFXTidy? Only if installing?
+- [x] Add as custom command to `ALL` with dependency to GFXTidy? Only if installing?
 
 # Checks
+
+The tag 'experimental' in some checker names enables ignoring WIP checks when working on other stuff not on implementing checks.
 
 - [gfx-implementation-in-namespace](#gfx-implementation-in-namespace)
 - [gfx-main-implementation-filename](#gfx-main-implementation-filename)
@@ -87,43 +91,49 @@ clang-tidy --checks="-*,gfx-*" \
 
 ## gfx-implementation-in-namespace
 
-Imitate "llvmlibc-implementation-in-namespace"
+Imitate "llvmlibc-implementation-in-namespace". Implementations belong in namespaces. Check for `gfx` as top project namespace.
 
 ```cpp
-namespace gfx//::...
+// nothing here, no exceptions.
+namespace gfx
 {
+  // all the things here
+}
+// not here, except for some stuff
 ```
 
-Skip `main` definitions
+Skip `main()` definitions. Must be in global namespace.
 
 
 ## gfx-main-implementation-filename
 
-Define `main` in file named `main.cpp`
+Define `main()` in files named `main.cpp`. Option "none" for filename affix.
 
-Added configuration option of `main` affix in filename: suffix, prefix
+Added configuration option of main affix in filename. Assuming snake\_case: suffix example `foo_main.cpp`.
+
+```yaml
+# In '.clang-tidy' or other custom configuration file.
+CheckOptions:
+  gfx-main-implementation-filename.Affix: 'none;suffix'
+```
+
+Separate `main()` definition from an "application" instantiable in a test. Handle configuration file parsing or command line argument parsing as separate from application logic.
 
 
 ## gfx-basename-declaration
 
-Checks if basename of header file matches declaration names. Does not check if implementation file.
+Checks if basename of header file matches declaration names. Does not check in implementation files.
 
 ```cpp
-// Examples in file foo_bar_baz.hpp
-namespace foo_bar_baz
-{
-
+// In file foo_bar_baz.hpp
+namespace foo_bar_baz {
 // or
-
 T FooBarBaz;
-
 // or
-
 void fooBarBaz();
-//...
 ```
 
-Converts names from snake_case and then lowercase. Exact matches of configurable cases not informative and I want to keep acronyms all lowercase or uppercase.
+Converts names from snake_case and then lowercases all characters before matching. Exact matches of configurable identifier name cases not needed and I want to keep acronyms all lowercase or uppercase.
 
 
 ## gfx-fundamental-type
@@ -132,10 +142,11 @@ Intended to be used in "applications" and more integrating components to enforce
 
 String literals not found. Integer literals also but these are magic numbers though? Use strongly typed instead of stringly typed interfaces. *Finish* parsing configurations and options in config utility components and forward *structured parametrized data* to instead of soft weaksauce strings.
 
-Ignores cv qualifier on type and flags `const` qualified variables.
+Ignores cv qualifier on type, flags `const` qualified variables.
 
 ```cpp
 // Examples of disallowed signatures
+
 /* built-ins */
 float floatVar;
 uint32_t intVar; // is 'unsigned int'
@@ -148,7 +159,7 @@ char* charPtr;
 
 `argc` and `argv` should be forwarded to some CLI argument parser component. `argv` not identified as a `char*` but fine for now because "unsafe buffer usage" and c-style pointer and arrays checkers expose this.
 
-Consider a strongly typed and strongly checked `main` definition wrapper? [C++ Weekly: Is a better 'main' possible?](https://www.youtube.com/watch?v=zCzD9uSDI8c)
+Consider a strongly typed and strongly checked `main()` definition wrapper? [C++ Weekly: Is a better 'main' possible?](https://www.youtube.com/watch?v=zCzD9uSDI8c)
 
 
 ## gfx-experimental-package-namespace
@@ -160,27 +171,45 @@ In file `/foo/bar/baz.hpp`
 ```cpp
 namespace gfx::foo::bar
 {
-
-// and
-
-namespace gfx
-{
-namespace foo
-{
-namespace bar
-{
-//...
+// or
+namespace gfx {
+namespace foo {
+namespace bar {
 ```
 
 `baz` may be class or namespace or function.
 
+```yaml
+CheckOptions:
+  gfx-experimental-package-namespace.Allowed: 'detail'
+```
+
+Rename option to IgnoredNamespace? Does not need to match parent directory. Add option to ignore directories? Such as "src" or "include" as is done in "llvm-header-guard"?
+
 ## gfx-experimental-class-cohesion
 
-Similar to this python checker
+Similar to the python checker [flake8-cohesion](https://github.com/mschwager/cohesion).
 
-[flake8-cohesion](https://github.com/mschwager/cohesion)
+Score classes for member usage in implementations. Low cohesion score may indicate need to split into separate classes with clearer simpler responsibilities.
+
+Score for a member function is ratio of used member variables over total member variables. A total score for a class is the average of its member function scores.
+
+```cpp
+class Foo // total score 50
+{
+  public:
+    int x() {return 5;}     // score 0
+    int y() {return a;}     // score 50
+    int z() {return b + a;} // score 100
+
+  private:
+    int a{3};
+    int b{4};
+};
+```
 
 - [x] Check for private member usage in methods
+   - Track methods or members?
 - [ ] Check for private method usage in methods
 
 Support cohesion metric for other stuff than class?
