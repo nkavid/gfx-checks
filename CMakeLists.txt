@@ -50,7 +50,7 @@ gfx_tidy_object(
   OBJECT
     "gfxTidyModule"
   SOURCES
-    "src/gfx/GFXTidyModule.cpp"
+    "src/gfx/gfx_tidy_module.cpp"
   OPTIONS
     "-Wno-weak-vtables"
     "-Wno-global-constructors"
@@ -61,12 +61,12 @@ gfx_tidy_object(
   OBJECT
     "gfxTidyChecks"
   SOURCES
-    "src/gfx/ClassCohesionCheck.cpp"
-    "src/gfx/ImplementationInNamespaceCheck.cpp"
-    "src/gfx/MainImplementationFilenameCheck.cpp"
-    "src/gfx/PackageNamespaceCheck.cpp"
-    "src/gfx/BasenameDeclarationCheck.cpp"
-    "src/gfx/FundamentalTypeCheck.cpp"
+    "src/gfx/class_cohesion_check.cpp"
+    "src/gfx/implementation_in_namespace_check.cpp"
+    "src/gfx/main_implementation_filename_check.cpp"
+    "src/gfx/package_namespace_check.cpp"
+    "src/gfx/basename_declaration_check.cpp"
+    "src/gfx/fundamental_type_check.cpp"
 )
 
 add_library(gfx_tidy_checks SHARED)

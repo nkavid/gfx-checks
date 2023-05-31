@@ -1,9 +1,13 @@
-#include "gfx/BasenameDeclarationCheck.h"
-#include "gfx/ClassCohesionCheck.h"
-#include "gfx/FundamentalTypeCheck.h"
-#include "gfx/ImplementationInNamespaceCheck.h"
-#include "gfx/MainImplementationFilenameCheck.h"
-#include "gfx/PackageNamespaceCheck.h"
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+#include "gfx/basename_declaration_check.hpp"
+#include "gfx/class_cohesion_check.hpp"
+#include "gfx/fundamental_type_check.hpp"
+#include "gfx/implementation_in_namespace_check.hpp"
+#include "gfx/main_implementation_filename_check.hpp"
+#include "gfx/package_namespace_check.hpp"
 
 #include <clang-tidy/ClangTidyModule.h>
 #include <clang-tidy/ClangTidyModuleRegistry.h>
