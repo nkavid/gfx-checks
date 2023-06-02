@@ -3,6 +3,7 @@ set(GFX_MODULE_UNIT_TESTS
   "${CMAKE_CURRENT_LIST_DIR}/unittests/package_namespace_check_test.cpp"
   "${CMAKE_CURRENT_LIST_DIR}/unittests/basename_declaration_check_test.cpp"
   "${CMAKE_CURRENT_LIST_DIR}/unittests/fundamental_type_check_test.cpp"
+  "${CMAKE_CURRENT_LIST_DIR}/unittests/braced_initialization_check_test.cpp"
   PARENT_SCOPE
 )
 

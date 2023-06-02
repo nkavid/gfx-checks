@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 #include "gfx/basename_declaration_check.hpp"
+#include "gfx/braced_initialization_check.hpp"
 #include "gfx/class_cohesion_check.hpp"
 #include "gfx/fundamental_type_check.hpp"
 #include "gfx/implementation_in_namespace_check.hpp"
@@ -32,6 +33,8 @@ class GFXTidyModule : public ClangTidyModule
       CheckFactories.registerCheck<BasenameDeclarationCheck>(
           "gfx-basename-declaration");
       CheckFactories.registerCheck<FundamentalTypeCheck>("gfx-fundamental-type");
+      CheckFactories.registerCheck<BracedInitializationCheck>(
+          "gfx-experimental-braced-initialization");
     }
 };
 

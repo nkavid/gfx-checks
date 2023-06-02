@@ -67,6 +67,7 @@ gfx_tidy_object(
     "src/gfx/package_namespace_check.cpp"
     "src/gfx/basename_declaration_check.cpp"
     "src/gfx/fundamental_type_check.cpp"
+    "src/gfx/braced_initialization_check.cpp"
 )
 
 add_library(gfx_tidy_checks SHARED)

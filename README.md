@@ -85,6 +85,7 @@ The tag 'experimental' in some checker names enables ignoring WIP checks when wo
 - [gfx-main-implementation-filename](#gfx-main-implementation-filename)
 - [gfx-basename-declaration](#gfx-basename-declaration)
 - [gfx-fundamental-type](#gfx-fundamental-type)
+- [gfx-experimental-braced-initialization](#gfx-experimental-braced-initialization)
 - [gfx-experimental-package-namespace](#gfx-experimental-package-namespace)
 - [gfx-experimental-class-cohesion](#gfx-experimental-class-cohesion)
 
@@ -160,6 +161,34 @@ char* charPtr;
 `argc` and `argv` should be forwarded to some CLI argument parser component. `argv` not identified as a `char*` but fine for now because "unsafe buffer usage" and c-style pointer and arrays checkers expose this.
 
 Consider a strongly typed and strongly checked `main()` definition wrapper? [C++ Weekly: Is a better 'main' possible?](https://www.youtube.com/watch?v=zCzD9uSDI8c)
+
+
+## gfx-experimental-braced-initialization
+
+Modern Effective C++: Item 7: Distinguish between `()` and `{}` when creating objects.
+
+- [ES.20: Always initialize an object](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#es20-always-initialize-an-object)
+- [ES.23: Prefer the `{}` initializer syntax](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#es23-prefer-the--initializer-syntax)
+- [ES.64: Use the `T{e}` notation for construction](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#es64-use-the-tenotation-for-construction)
+- [T.68: Use `{}` rather than `()` within templates to avoid ambiguities](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#t68-use--rather-than--within-templates-to-avoid-ambiguities)
+
+```cpp
+/* not ok */
+int intVar;           // Uninitialized variable
+std::string myString; // Implicit ctor
+int five = 6;         // C-style assignment initialization
+
+/* ok! */
+auto typeDeducedVar = /* ... */; // copy ctor
+void myFunc(int param) {}        // pass-by-value
+for (int i = 0; i < N; ++i) {}   // usually what it looks like :|
+```
+
+Enforcement exceptions a bit arbitrary?
+
+- [x] Ignore `for` and `catch` statement ancestors
+- [ ] More specific diagnostic messages?
+- [ ] FIXIT fix-in-place feature!
 
 
 ## gfx-experimental-package-namespace
