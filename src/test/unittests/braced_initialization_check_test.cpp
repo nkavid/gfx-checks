@@ -6,8 +6,7 @@
 
 #include "ClangTidyTest.h"
 #include "gtest/gtest.h"
-
-#include <iostream>
+#include "utils.hpp"
 
 namespace clang
 {
@@ -15,23 +14,6 @@ namespace tidy
 {
 namespace test
 {
-template <class T>
-static std::string getErrorString(const T& Errors)
-{
-  if (Errors.size() == 0)
-  {
-    return "no errors";
-  }
-
-  std::string string{};
-  for (const auto& error : Errors)
-  {
-    string = string + error.Message.Message + '\n';
-  }
-
-  return string;
-}
-
 TEST(GFXModuleTest, PreferBracedInit)
 {
   using namespace clang::tidy::gfx;
@@ -43,7 +25,7 @@ TEST(GFXModuleTest, PreferBracedInit)
                                             &Errors,
                                             "dummyfilename.cpp");
 
-  EXPECT_EQ(2U, Errors.size()) << getErrorString(Errors);
+  EXPECT_EQ(2U, Errors.size()) << utils::getErrorString(Errors);
 }
 
 } // namespace test

@@ -6,8 +6,7 @@
 
 #include "ClangTidyTest.h"
 #include "gtest/gtest.h"
-
-#include <iostream>
+#include "utils.hpp"
 
 namespace clang
 {
@@ -15,24 +14,6 @@ namespace tidy
 {
 namespace test
 {
-
-template <class T>
-static std::string getErrorString(const T& Errors)
-{
-  if (Errors.size() == 0)
-  {
-    return "no errors";
-  }
-
-  std::string string{};
-  for (const auto& error : Errors)
-  {
-    string = string + error.Message.Message + '\n';
-  }
-
-  return string;
-}
-
 TEST(GFXModuleTest, ReportOnceIfNoMatch)
 {
   using namespace clang::tidy::gfx;
@@ -48,7 +29,7 @@ TEST(GFXModuleTest, ReportOnceIfNoMatch)
                                            &Errors,
                                            "foo/this_is_bar.hpp");
 
-  EXPECT_EQ(1U, Errors.size()) << getErrorString(Errors);
+  EXPECT_EQ(1U, Errors.size()) << utils::getErrorString(Errors);
 }
 
 TEST(GFXModuleTest, CheckForClass)
@@ -66,7 +47,7 @@ TEST(GFXModuleTest, CheckForClass)
                                            &Errors,
                                            "foo/this_is_bar.hpp");
 
-  EXPECT_EQ(0U, Errors.size()) << getErrorString(Errors);
+  EXPECT_EQ(0U, Errors.size()) << utils::getErrorString(Errors);
 }
 
 TEST(GFXModuleTest, CheckForNamespace)
@@ -84,7 +65,7 @@ TEST(GFXModuleTest, CheckForNamespace)
                                            &Errors,
                                            "foo/this_is_bar.hpp");
 
-  EXPECT_EQ(0U, Errors.size()) << getErrorString(Errors);
+  EXPECT_EQ(0U, Errors.size()) << utils::getErrorString(Errors);
 }
 
 TEST(GFXModuleTest, AcceptDuplication)
@@ -102,7 +83,7 @@ TEST(GFXModuleTest, AcceptDuplication)
                                            &Errors,
                                            "foo/this_is_bar.hpp");
 
-  EXPECT_EQ(0U, Errors.size()) << getErrorString(Errors);
+  EXPECT_EQ(0U, Errors.size()) << utils::getErrorString(Errors);
 }
 
 TEST(GFXModuleTest, SupportConfigurableNamingCases)
@@ -127,7 +108,7 @@ TEST(GFXModuleTest, SupportConfigurableNamingCases)
                                            std::nullopt,
                                            Options);
 
-  EXPECT_EQ(0U, Errors.size()) << getErrorString(Errors);
+  EXPECT_EQ(0U, Errors.size()) << utils::getErrorString(Errors);
 }
 
 } // namespace test

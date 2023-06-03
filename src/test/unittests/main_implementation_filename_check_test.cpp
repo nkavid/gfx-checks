@@ -13,7 +13,6 @@ namespace tidy
 {
 namespace test
 {
-
 TEST(GFXModuleTest, WrongFileName)
 {
   using namespace clang::tidy::gfx;
