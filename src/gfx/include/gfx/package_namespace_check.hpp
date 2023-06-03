@@ -35,4 +35,4 @@ class PackageNamespaceCheck : public ClangTidyCheck
     std::vector<StringRef> _allowed{};
 };
 
-} // namespace clang
+} // namespace clang::tidy::gfx

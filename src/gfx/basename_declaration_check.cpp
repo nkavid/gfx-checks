@@ -87,7 +87,7 @@ bool findAnyMatch(const std::filesystem::path& filename,
 
   return foundAnyMatch;
 }
-}
+} // namespace
 
 BasenameDeclarationCheck::BasenameDeclarationCheck(StringRef Name,
                                                    ClangTidyContext* context)
@@ -165,4 +165,4 @@ void BasenameDeclarationCheck::onEndOfTranslationUnit()
   }
 }
 
-} // namespace clang
+} // namespace clang::tidy::gfx

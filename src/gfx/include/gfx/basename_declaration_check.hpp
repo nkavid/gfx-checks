@@ -38,7 +38,7 @@ enum class Case
 };
 
 using Map = std::map<naming::Declaration, naming::Case>;
-}
+} // namespace naming
 
 class BasenameDeclarationCheck : public ClangTidyCheck
 {
@@ -66,4 +66,4 @@ class BasenameDeclarationCheck : public ClangTidyCheck
         _foundDeclarationsPerFile{};
 };
 
-} // namespace clang
+} // namespace clang::tidy::gfx

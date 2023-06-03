@@ -18,8 +18,7 @@ constexpr uint32_t defaultMaxAllowedScore{100};
 ClassCohesionCheck::ClassCohesionCheck(StringRef Name, ClangTidyContext* context)
     : ClangTidyCheck(Name, context),
       _maxAllowedScore(Options.get("Score", defaultMaxAllowedScore))
-{
-}
+{}
 
 void ClassCohesionCheck::storeOptions(ClangTidyOptions::OptionMap& Opts)
 {
@@ -153,4 +152,4 @@ void ClassCohesionCheck::onEndOfTranslationUnit()
   }
 }
 
-} // namespace clang
+} // namespace clang::tidy::gfx

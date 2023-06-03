@@ -42,4 +42,4 @@ class ClassCohesionCheck : public ClangTidyCheck
     unsigned _maxAllowedScore{};
 };
 
-} // namespace clang
+} // namespace clang::tidy::gfx

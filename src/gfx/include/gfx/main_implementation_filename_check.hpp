@@ -33,4 +33,4 @@ class MainImplementationFilenameCheck : public ClangTidyCheck
     std::vector<StringRef> _affixes;
 };
 
-} // namespace clang
+} // namespace clang::tidy::gfx

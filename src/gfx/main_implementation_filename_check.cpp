@@ -19,8 +19,7 @@ MainImplementationFilenameCheck::MainImplementationFilenameCheck(
     ClangTidyContext* context)
     : ClangTidyCheck(Name, context),
       _affixes(utils::options::parseStringList(Options.get("Affix", "none")))
-{
-}
+{}
 
 void MainImplementationFilenameCheck::storeOptions(ClangTidyOptions::OptionMap& Opts)
 {
@@ -62,4 +61,4 @@ void MainImplementationFilenameCheck::check(const MatchFinder::MatchResult& Resu
   diag(MatchedDecl->getLocation(), "main definition must be in file with 'main' affix");
 }
 
-} // namespace clang
+} // namespace clang::tidy::gfx

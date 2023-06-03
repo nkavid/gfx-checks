@@ -78,4 +78,4 @@ void PackageNamespaceCheck::check(const MatchFinder::MatchResult& Result)
   }
 }
 
-} // namespace clang
+} // namespace clang::tidy::gfx

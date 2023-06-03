@@ -13,8 +13,7 @@ namespace clang::tidy::gfx
 {
 FundamentalTypeCheck::FundamentalTypeCheck(StringRef Name, ClangTidyContext* context)
     : ClangTidyCheck(Name, context)
-{
-}
+{}
 
 void FundamentalTypeCheck::registerMatchers(ast_matchers::MatchFinder* Finder)
 {
@@ -78,4 +77,4 @@ void FundamentalTypeCheck::check(const ast_matchers::MatchFinder::MatchResult& R
   }
 }
 
-} // namespace clang
+} // namespace clang::tidy::gfx

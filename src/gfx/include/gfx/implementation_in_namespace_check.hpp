@@ -18,8 +18,7 @@ class ImplementationInNamespaceCheck : public ClangTidyCheck
   public:
     ImplementationInNamespaceCheck(StringRef name, ClangTidyContext* context)
         : ClangTidyCheck(name, context)
-    {
-    }
+    {}
 
     [[nodiscard]] bool
     isLanguageVersionSupported(const LangOptions& LangOpts) const override
@@ -31,4 +30,4 @@ class ImplementationInNamespaceCheck : public ClangTidyCheck
     void check(const ast_matchers::MatchFinder::MatchResult& Result) override;
 };
 
-} // namespace clang
+} // namespace clang::tidy::gfx

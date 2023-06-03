@@ -47,4 +47,4 @@ static ClangTidyModuleRegistry::Add<gfx::GFXTidyModule> X("gfx-module",
 volatile int g_GFXModuleAnchorSource = 0;
 // NOLINTEND
 
-} // namespace clang
+} // namespace clang::tidy

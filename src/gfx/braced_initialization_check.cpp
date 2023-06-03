@@ -28,13 +28,12 @@ std::string_view getInitStyleString(VarDecl::InitializationStyle initializationS
   }
   return "NOT RECOGNIZED";
 }
-}
+} // namespace
 
 BracedInitializationCheck::BracedInitializationCheck(StringRef Name,
                                                      ClangTidyContext* context)
     : ClangTidyCheck(Name, context)
-{
-}
+{}
 
 void BracedInitializationCheck::registerMatchers(ast_matchers::MatchFinder* Finder)
 {
@@ -67,4 +66,4 @@ void BracedInitializationCheck::check(
   }
 }
 
-} // namespace clang
+} // namespace clang::tidy::gfx

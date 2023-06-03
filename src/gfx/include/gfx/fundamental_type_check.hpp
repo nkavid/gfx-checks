@@ -23,4 +23,4 @@ class FundamentalTypeCheck : public ClangTidyCheck
     void check(const ast_matchers::MatchFinder::MatchResult& Result) override;
 };
 
-} // namespace clang
+} // namespace clang::tidy::gfx

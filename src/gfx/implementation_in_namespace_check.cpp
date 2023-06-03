@@ -53,4 +53,4 @@ void ImplementationInNamespaceCheck::check(const MatchFinder::MatchResult& Resul
       << g_RequiredNamespace;
 }
 
-} // namespace clang
+} // namespace clang::tidy::gfx
