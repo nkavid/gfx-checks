@@ -6,6 +6,7 @@
 
 #include "ClangTidyTest.h"
 #include "gtest/gtest.h"
+#include "utils.hpp"
 
 namespace clang
 {
@@ -47,7 +48,7 @@ TEST(GFXModuleTest, ClassCohesion)
                                      std::nullopt,
                                      Options);
 
-  EXPECT_EQ(3U, Errors.size());
+  EXPECT_EQ(3U, Errors.size()) << utils::getErrorString(Errors);
 }
 
 } // namespace test

@@ -5,7 +5,11 @@
 #include "gfx/class_cohesion_check.hpp"
 
 #include <clang/AST/ASTContext.h>
+#include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
+
+#include <cmath>
+#include <numeric>
 
 #include <clang-tidy/utils/OptionsUtils.h>
 
@@ -13,7 +17,54 @@ using namespace clang::ast_matchers;
 
 namespace clang::tidy::gfx
 {
+namespace
+{
+[[nodiscard]] size_t calcScore(size_t number, size_t total)
+{
+  const float ratio = static_cast<float>(number) / static_cast<float>(total);
+  return static_cast<size_t>(std::round(100.0F * ratio));
+}
+
+[[nodiscard]] size_t calcAverage(std::vector<size_t> scores)
+{
+  auto sum = static_cast<float>(std::accumulate(scores.begin(), scores.end(), 0UL));
+  return static_cast<size_t>(std::round(sum / static_cast<float>(scores.size())));
+}
+
+class UsedMemberVisitor : public RecursiveASTVisitor<UsedMemberVisitor>
+{
+  public:
+    UsedMemberVisitor(const std::vector<const FieldDecl*>& fieldDecls)
+    {
+      for (const auto* elem : fieldDecls)
+      {
+        _fieldDeclsCount[elem] = false;
+      }
+    }
+
+    bool VisitMemberExpr(MemberExpr* Node)
+    {
+      const auto* fieldDecl          = dyn_cast<FieldDecl>(Node->getMemberDecl());
+      _fieldDeclsCount.at(fieldDecl) = true;
+      return true;
+    }
+
+    [[nodiscard]] size_t getScore() const
+    {
+      size_t count{0};
+      for (const auto& [_, isUsed] : _fieldDeclsCount)
+      {
+        count += isUsed ? 1 : 0;
+      }
+      return calcScore(count, _fieldDeclsCount.size());
+    }
+
+  private:
+    std::map<const FieldDecl*, bool> _fieldDeclsCount{};
+};
+
 constexpr uint32_t defaultMaxAllowedScore{100};
+} // namespace
 
 ClassCohesionCheck::ClassCohesionCheck(StringRef Name, ClangTidyContext* context)
     : ClangTidyCheck(Name, context),
@@ -28,127 +79,77 @@ void ClassCohesionCheck::storeOptions(ClangTidyOptions::OptionMap& Opts)
 void ClassCohesionCheck::registerMatchers(MatchFinder* Finder)
 {
   Finder->addMatcher(cxxMethodDecl().bind("method"), this);
+  Finder->addMatcher(fieldDecl().bind("member"), this);
 }
 
-// NOLINTNEXTLINE(readability-function-size)
 void ClassCohesionCheck::check(const MatchFinder::MatchResult& Result)
 {
-  auto addIfValid = [&Result](const char* matcher, auto& vector) {
-    using VectorType  = std::remove_reference_t<decltype(vector)>;
+  auto addIfValid = [&Result](const char* matcher, auto& map) {
+    using MapType     = std::remove_reference_t<decltype(map)>;
+    using ParentType  = std::remove_pointer_t<typename MapType::key_type>;
+    using VectorType  = std::remove_pointer_t<typename MapType::mapped_type>;
     using ElementType = std::remove_pointer_t<typename VectorType::value_type>;
 
-    const auto* match = Result.Nodes.getNodeAs<ElementType>(matcher);
-    if (match)
+    auto* match = Result.Nodes.getNodeAs<ElementType>(matcher);
+    if (match == nullptr)
     {
-      if (Result.SourceManager->isInMainFile(match->getLocation()))
-      {
-        vector.push_back(match);
-      }
+      return;
+    }
+
+    if (!Result.SourceManager->isInMainFile(match->getLocation()))
+    {
+      return;
+    }
+
+    auto* parent = dyn_cast<ParentType>(match->getParent());
+    if (parent != nullptr)
+    {
+      // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+      map[parent].emplace_back(match);
     }
   };
 
-  addIfValid("method", _methods);
+  addIfValid("method", _classMethods);
+  addIfValid("member", _classMembers);
 }
 
-// NOLINTNEXTLINE
-static void traverse(const TypeDecl* parent,
-                     const Stmt* statement,
-                     std::vector<const FieldDecl*>& members)
-{
-  if (statement == nullptr)
-  {
-    return;
-  }
-
-  if (parent == nullptr)
-  {
-    return;
-  }
-
-  const auto children = statement->children();
-  if (children.empty())
-  {
-    return;
-  }
-
-  for (auto&& child : children)
-  {
-    if (child == nullptr)
-    {
-      continue;
-    }
-
-    if (child->getStmtClass() == Stmt::MemberExprClass)
-    {
-      const auto* member = dyn_cast<MemberExpr>(child)->getMemberDecl();
-      if (dyn_cast<FieldDecl>(member) != nullptr)
-      {
-        if (dyn_cast<FieldDecl>(member)->getParent() == parent)
-        {
-          members.push_back(dyn_cast<FieldDecl>(member));
-        }
-      }
-    }
-
-    traverse(parent, child, members);
-  }
-}
-
-// NOLINTNEXTLINE(readability-function-size)
 void ClassCohesionCheck::onEndOfTranslationUnit()
 {
-  for (const auto* method : _methods)
+  for (const auto& [parent, methods] : _classMethods)
   {
-    const auto* parent = dyn_cast<TypeDecl>(method->getParent());
-    _allClassMethods[parent].push_back(method);
-
-    const auto* methodBody = method->getBody();
-    auto& members          = _usedMembers[method];
-    traverse(parent, methodBody, members);
-
-    std::sort(members.begin(), members.end());
-    auto lastIter = std::unique(members.begin(), members.end());
-    members.erase(lastIter, members.end());
-  }
-
-  for (const auto& [method, members] : _usedMembers)
-  {
-    const auto* parent = dyn_cast<TypeDecl>(method->getParent());
-
-    auto& allMembers = _allClassMembers[parent];
-    allMembers.insert(allMembers.end(), members.begin(), members.end());
-
-    std::sort(allMembers.begin(), allMembers.end());
-    auto lastIter = std::unique(allMembers.begin(), allMembers.end());
-    allMembers.erase(lastIter, allMembers.end());
-  }
-
-  for (const auto& [checkedClass, allMembers] : _allClassMembers)
-  {
-    const auto methods = _allClassMethods[checkedClass];
-
-    auto numMembers = allMembers.size();
-    size_t sum{0};
-    for (const auto* const method : methods)
+    std::vector<size_t> scores{};
+    for (const auto& method : methods)
     {
-      auto numUsed = _usedMembers[method].size();
-      auto score   = 100.0F * static_cast<float>(numUsed)
-                 / static_cast<float>(numMembers);
-      _methodScores[method] = static_cast<unsigned>(score);
-      sum += _methodScores[method];
+      UsedMemberVisitor visitor{_classMembers[parent]};
+      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+      visitor.TraverseDecl(const_cast<CXXMethodDecl*>(method));
+      scores.emplace_back(visitor.getScore());
     }
 
-    sum = sum / methods.size();
-
-    if (sum <= _maxAllowedScore)
+    const size_t average = calcAverage(scores);
+    if (average <= _maxAllowedScore)
     {
-      for (const auto* method : methods)
-      {
-        diag(method->getLocation(), "[%0 total %3] %0::%1() score %2")
-            << dyn_cast<NamedDecl>(method->getParent())->getName()
-            << method->getNameInfo().getAsString() << _methodScores[method] << sum;
-      }
+      reportDiagnostic(parent, average, methods, scores);
     }
+  }
+}
+
+void ClassCohesionCheck::reportDiagnostic(
+    const CXXRecordDecl* parent,
+    size_t average,
+    const std::vector<const CXXMethodDecl*>& methods,
+    const std::vector<size_t>& scores)
+{
+  diag(parent->getLocation(), "%0 Average score %1")
+      << parent->getNameAsString() << average;
+
+  auto scoresIter = scores.begin();
+  for (const auto& element : methods)
+  {
+    diag("%0::%1 Score %2", DiagnosticIDs::Note)
+        << parent->getNameAsString() << element->getNameAsString() << *scoresIter;
+
+    ++scoresIter;
   }
 }
 

@@ -11,7 +11,7 @@
 #include <map>
 #include <vector>
 
-#include "clang-tidy/ClangTidyCheck.h"
+#include <clang-tidy/ClangTidyCheck.h>
 
 namespace clang::tidy::gfx
 {
@@ -34,11 +34,13 @@ class ClassCohesionCheck : public ClangTidyCheck
     void onEndOfTranslationUnit() override;
 
   private:
-    std::map<const TypeDecl*, std::vector<const FieldDecl*>> _allClassMembers{};
-    std::map<const TypeDecl*, std::vector<const FunctionDecl*>> _allClassMethods{};
-    std::vector<const FunctionDecl*> _methods{};
-    std::map<const FunctionDecl*, std::vector<const FieldDecl*>> _usedMembers{};
-    std::map<const FunctionDecl*, unsigned> _methodScores{};
+    void reportDiagnostic(const CXXRecordDecl* parent,
+                          size_t average,
+                          const std::vector<const CXXMethodDecl*>& methods,
+                          const std::vector<size_t>& scores);
+    std::map<const CXXRecordDecl*, std::vector<const FieldDecl*>> _classMembers{};
+    std::map<const CXXRecordDecl*, std::vector<const CXXMethodDecl*>> _classMethods{};
+
     unsigned _maxAllowedScore{};
 };
 
