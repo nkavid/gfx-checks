@@ -14,41 +14,62 @@ namespace tidy
 {
 namespace test
 {
+namespace
+{
+namespace dummy_source
+{
+const char* dummy = "class Foo\n"
+                    "{\n"
+                    "public:\n"
+                    "Foo() {}\n"
+                    "\n"
+                    "~Foo() = default;\n"
+                    "\n"
+                    "int x();\n"
+                    "int y();\n"
+                    "int z();\n"
+                    "\n"
+                    "private:\n"
+                    "int _a{3};\n"
+                    "int _b{4};\n"
+                    "};\n"
+                    "\n"
+                    "int Foo::x()\n"
+                    "{\n"
+                    "return 5;\n"
+                    "}\n"
+                    "\n"
+                    "int Foo::y()\n"
+                    "{\n"
+                    "return _a;\n"
+                    "}\n"
+                    "\n"
+                    "int Foo::z()\n"
+                    "{\n"
+                    "return _b + _a;\n"
+                    "}\n";
+
+} // namespace dummy_source
+} // namespace
+
 TEST(GFXModuleTest, ClassCohesion)
 {
   using namespace clang::tidy::gfx;
 
   ClangTidyOptions Options;
-  Options.CheckOptions["test-check-0.Score"] = "50";
+  Options.CheckOptions["test-check-0.Score"] = "100";
 
   std::vector<ClangTidyError> Errors{};
-  runCheckOnCode<ClassCohesionCheck>("class Foo\n"
-                                     "{\n"
-                                     "public:\n"
-                                     "  int x() {return 5;}\n"
-                                     "  int y() {return a;}\n"
-                                     "  int z() {return b + a;}\n"
-                                     "private:\n"
-                                     "  int a{3};\n"
-                                     "  int b{4};\n"
-                                     "};\n"
-                                     "\n"
-                                     "int i{8};\n"
-                                     "\n"
-                                     "class Bar\n"
-                                     "{\n"
-                                     "public:\n"
-                                     "  int y() {return a;}\n"
-                                     "private:\n"
-                                     "  int a{1};\n"
-                                     "  int b{1};\n"
-                                     "};\n",
+  runCheckOnCode<ClassCohesionCheck>(dummy_source::dummy,
                                      &Errors,
                                      "foo/bar.cpp",
                                      std::nullopt,
                                      Options);
 
-  EXPECT_EQ(3U, Errors.size()) << utils::getErrorString(Errors);
+  auto errString = utils::getErrorString(Errors);
+
+  EXPECT_EQ(1U, Errors.size()) << errString;
+  EXPECT_TRUE(errString.find("score 50") != std::string::npos) << errString;
 }
 
 } // namespace test

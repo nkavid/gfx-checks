@@ -227,6 +227,8 @@ Score for a member function is ratio of used member variables over total member 
 class Foo // total score 50
 {
   public:
+    Foo() {}                // ctor ignored
+    ~Foo() = delete;        // no function body
     int x() {return 5;}     // score 0
     int y() {return a;}     // score 50
     int z() {return b + a;} // score 100
@@ -236,6 +238,8 @@ class Foo // total score 50
     int b{4};
 };
 ```
+
+Ignoring constructor and ignoring `=delete` and `=default`. Several other clang-tidy checks and compiler warnings cover that.
 
 - [x] Check for private member usage in methods
    - Track methods or members?

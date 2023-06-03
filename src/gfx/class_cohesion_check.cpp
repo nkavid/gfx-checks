@@ -78,7 +78,10 @@ void ClassCohesionCheck::storeOptions(ClangTidyOptions::OptionMap& Opts)
 
 void ClassCohesionCheck::registerMatchers(MatchFinder* Finder)
 {
-  Finder->addMatcher(cxxMethodDecl().bind("method"), this);
+  Finder->addMatcher(cxxMethodDecl(hasBody(compoundStmt()),
+                                   unless(cxxConstructorDecl()))
+                         .bind("method"),
+                     this);
   Finder->addMatcher(fieldDecl().bind("member"), this);
 }
 
@@ -117,7 +120,13 @@ void ClassCohesionCheck::onEndOfTranslationUnit()
 {
   for (const auto& [parent, methods] : _classMethods)
   {
+    if (_classMembers[parent].empty())
+    {
+      break;
+    }
+
     std::vector<size_t> scores{};
+
     for (const auto& method : methods)
     {
       UsedMemberVisitor visitor{_classMembers[parent]};
