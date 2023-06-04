@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include <clang-tidy/ClangTidyCheck.h>
+
 #include <map>
 #include <vector>
-
-#include <clang-tidy/ClangTidyCheck.h>
 
 namespace clang::tidy::gfx
 {

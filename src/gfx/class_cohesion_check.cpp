@@ -4,14 +4,13 @@
 
 #include "gfx/class_cohesion_check.hpp"
 
+#include <clang-tidy/utils/OptionsUtils.h>
 #include <clang/AST/ASTContext.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 
 #include <cmath>
 #include <numeric>
-
-#include <clang-tidy/utils/OptionsUtils.h>
 
 using namespace clang::ast_matchers;
 

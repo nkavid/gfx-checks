@@ -31,9 +31,9 @@ IncludeCategories:
     Priority:        1
   - Regex:           '(glew)'
     Priority:        2
-  - Regex:           '<([A-Za-z0-9\Q/-_\E])+>'
+  - Regex:           '<([-_A-Za-z0-9\Q/-_\E])+>'
     Priority:        4
-  - Regex:           '<([A-Za-z0-9.\Q/-_\E])+>'
+  - Regex:           '<([-_A-Za-z0-9.\Q/-_\E])+>'
     Priority:        3
 IncludeIsMainRegex: '([-_](test|unittest))?$'
 PackConstructorInitializers: Never

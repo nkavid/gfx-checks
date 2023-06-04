@@ -4,11 +4,10 @@
 
 #include "gfx/package_namespace_check.hpp"
 
+#include <clang-tidy/utils/OptionsUtils.h>
 #include <clang/AST/ASTContext.h>
 #include <clang/AST/Decl.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
-
-#include <clang-tidy/utils/OptionsUtils.h>
 
 using namespace clang::ast_matchers;
 

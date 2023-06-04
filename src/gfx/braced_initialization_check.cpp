@@ -6,10 +6,9 @@
 
 #include "llvm/Support/WithColor.h"
 
+#include <clang-tidy/utils/OptionsUtils.h>
 #include <clang/AST/ASTContext.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
-
-#include <clang-tidy/utils/OptionsUtils.h>
 
 namespace clang::tidy::gfx
 {

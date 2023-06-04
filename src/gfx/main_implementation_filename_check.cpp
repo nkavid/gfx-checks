@@ -4,10 +4,9 @@
 
 #include "gfx/main_implementation_filename_check.hpp"
 
+#include <clang-tidy/utils/OptionsUtils.h>
 #include <clang/AST/ASTContext.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
-
-#include <clang-tidy/utils/OptionsUtils.h>
 
 using namespace clang::ast_matchers;
 
