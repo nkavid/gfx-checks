@@ -4,6 +4,8 @@
 
 #include "gfx/braced_initialization_check.hpp"
 
+#include "llvm/Support/WithColor.h"
+
 #include <clang/AST/ASTContext.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 
@@ -27,6 +29,54 @@ std::string_view getInitStyleString(VarDecl::InitializationStyle initializationS
     return "Direct list initialization";
   }
   return "NOT RECOGNIZED";
+}
+
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+FixItHint getFixItHint(const VarDecl* varDecl)
+{
+  if (varDecl->getInitStyle() == VarDecl::CInit)
+  {
+    const auto* initExpr = varDecl->getInit();
+    if (initExpr == nullptr)
+    {
+      const auto replacementString = varDecl->getNameAsString() + '{' + '}';
+      return FixItHint::CreateReplacement(varDecl->getLocation(), replacementString);
+    }
+
+    const auto* boolExpr = dyn_cast<CXXBoolLiteralExpr>(initExpr);
+    if (boolExpr != nullptr)
+    {
+      const auto replacementRange = SourceRange{varDecl->getLocation(),
+                                                initExpr->getExprLoc()};
+      const auto* boolStr         = boolExpr->getValue() ? "true" : "false";
+
+      const auto replacementString = varDecl->getNameAsString() + '{' + boolStr + '}';
+      return FixItHint::CreateReplacement(replacementRange, replacementString);
+    }
+
+    const auto* integerLiteral = dyn_cast<IntegerLiteral>(initExpr);
+    if (integerLiteral != nullptr)
+    {
+      const auto replacementRange = SourceRange{varDecl->getLocation(),
+                                                initExpr->getExprLoc()};
+
+      const uint64_t integerValue = integerLiteral->getValue().getLimitedValue();
+      const auto integerString    = std::to_string(integerValue);
+
+      const auto replacementString = varDecl->getNameAsString() + '{' + integerString
+                                   + '}';
+      return FixItHint::CreateReplacement(replacementRange, replacementString);
+    }
+
+    const auto* implicitCastExpr = dyn_cast<ImplicitCastExpr>(initExpr);
+    if (implicitCastExpr != nullptr)
+    {
+      varDecl->dumpColor();
+      llvm::WithColor::error(llvm::errs(), "Implicit cast")
+          << "Implement replacement with literal suffix\n\n";
+    }
+  }
+  return FixItHint{};
 }
 } // namespace
 
@@ -62,7 +112,8 @@ void BracedInitializationCheck::check(
   if (initStyle != VarDecl::ListInit)
   {
     diag(varDecl->getLocation(), "Variable '%0' has %1")
-        << varDecl->getNameAsString() << getInitStyleString(initStyle);
+        << varDecl->getNameAsString() << getInitStyleString(initStyle)
+        << getFixItHint(varDecl);
   }
 }
 

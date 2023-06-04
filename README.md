@@ -188,7 +188,9 @@ Enforcement exceptions a bit arbitrary?
 
 - [x] Ignore `for` and `catch` statement ancestors
 - [ ] More specific diagnostic messages?
-- [ ] FIXIT fix-in-place feature!
+- [x] FIXIT fix-in-place feature!
+  - Partial support :D
+  - RecursiveASTVisitor?
 
 
 ## gfx-experimental-package-namespace
