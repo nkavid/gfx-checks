@@ -87,6 +87,7 @@ The tag 'experimental' in some checker names enables ignoring WIP checks when wo
 - [gfx-fundamental-type](#gfx-fundamental-type)
 - [gfx-experimental-braced-initialization](#gfx-experimental-braced-initialization)
 - [gfx-experimental-package-namespace](#gfx-experimental-package-namespace)
+- [gfx-experimental-package-prefix](#gfx-experimental-package-prefix)
 - [gfx-experimental-class-cohesion](#gfx-experimental-class-cohesion)
 
 
@@ -216,6 +217,45 @@ CheckOptions:
 ```
 
 Rename option to IgnoredNamespace? Does not need to match parent directory. Add option to ignore directories? Such as "src" or "include" as is done in "llvm-header-guard"?
+
+## gfx-experimental-package-prefix
+
+Similar to package namespace and project namespace rule. Simple string matching. Acronyms or other mapping rule also directory depth and ignored directories would be nice at larger scale.
+
+```c
+/* foo/bar/baz.h */
+/* library + component + decl */
+
+void bar_baz_func(void);
+
+struct bar_baz_data{};
+
+typedef struct /* _bar_baz_data? */
+{
+  /* ... */
+} bar_baz_data;
+
+typedef /* anything */ bar_baz_something;
+
+enum bar_baz_something
+{
+  bar_baz_lorem,
+  bar_baz_ipsum
+};
+```
+
+Check just header; definitions in implementation files must match. Acronym mapping not implemented.
+
+```json
+{
+  "PackageAcronyms":
+  {
+    "foo/bar/baz": "fbb",
+    "argparse/options": "apo"
+  }
+}
+```
+
 
 ## gfx-experimental-class-cohesion
 

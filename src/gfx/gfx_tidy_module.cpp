@@ -9,6 +9,7 @@
 #include "gfx/implementation_in_namespace_check.hpp"
 #include "gfx/main_implementation_filename_check.hpp"
 #include "gfx/package_namespace_check.hpp"
+#include "gfx/package_prefix_check.hpp"
 
 #include <clang-tidy/ClangTidyModule.h>
 #include <clang-tidy/ClangTidyModuleRegistry.h>
@@ -35,6 +36,8 @@ class GFXTidyModule : public ClangTidyModule
       CheckFactories.registerCheck<FundamentalTypeCheck>("gfx-fundamental-type");
       CheckFactories.registerCheck<BracedInitializationCheck>(
           "gfx-experimental-braced-initialization");
+      CheckFactories.registerCheck<PackagePrefixCheck>(
+          "gfx-experimental-package-prefix");
     }
 };
 
