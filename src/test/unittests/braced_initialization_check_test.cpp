@@ -14,20 +14,30 @@ namespace tidy
 {
 namespace test
 {
+namespace
+{
+namespace dummy_source
+{
+const char* braced_init = "int intVar1;\n"
+                          "unsigned long intVar2 = 2;\n"
+                          "unsigned long intVar3 = 2.0f;\n"
+                          "float floatVar = 0.8f;\n"
+                          "int intVar4{};\n"
+                          "\n";
+} // namespace dummy_source
+} // namespace
+
 TEST(GFXModuleTest, PreferBracedInit)
 {
   using namespace clang::tidy::gfx;
 
   std::vector<ClangTidyError> Errors{};
-  runCheckOnCode<BracedInitializationCheck>("int intVar1;\n"
-                                            "unsigned long intVar2 = 2;\n"
-                                            "unsigned long intVar3 = 2.0f;\n"
-                                            "float floatVar = 0.8f;\n"
-                                            "int intVar4{};\n",
+  runCheckOnCode<BracedInitializationCheck>(dummy_source::braced_init,
                                             &Errors,
                                             "dummyfilename.cpp");
 
-  EXPECT_EQ(2U, Errors.size()) << utils::getErrorString(Errors);
+  EXPECT_EQ(2U, Errors.size())
+      << utils::getErrorString(Errors, dummy_source::braced_init);
 }
 
 } // namespace test
