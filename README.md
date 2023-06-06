@@ -185,14 +185,17 @@ void myFunc(int param) {}        // pass-by-value
 for (int i = 0; i < N; ++i) {}   // usually what it looks like :|
 ```
 
-Enforcement exceptions a bit arbitrary?
+Enforcement exceptions a bit arbitrary? Specify cases in test.
 
 - [x] Ignore `for` and `catch` statement ancestors
 - [ ] More specific diagnostic messages?
 - [x] FIXIT fix-in-place feature!
   - Partial support :D
-  - RecursiveASTVisitor?
-
+- [ ] Integer FixItHint depends on max 64 bit width? (and unsigned?)
+  - Use `clang::TargetInfo`? Reference [Fundamental Types](https://en.cppreference.com/w/cpp/language/types).
+- [ ] Floating point literal. Use `clang::SourceManager` somehow to get the source instead of `llvm::APFloat`? Replace assignment with '{' character somehow?
+- [ ] String literal?
+- [ ] `<anonymous>::getFixItHint()` is very ugly. `clang::RecursiveASTVisitor<>`?
 
 ## gfx-experimental-package-namespace
 

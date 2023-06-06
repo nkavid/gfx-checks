@@ -4,6 +4,7 @@
 
 #include "gfx/braced_initialization_check.hpp"
 
+#include "clang/Basic/TargetInfo.h"
 #include "llvm/Support/WithColor.h"
 
 #include <clang-tidy/utils/OptionsUtils.h>
@@ -53,6 +54,12 @@ FixItHint getFixItHint(const VarDecl* varDecl)
       return FixItHint::CreateReplacement(replacementRange, replacementString);
     }
 
+    const auto* floatingLiteral = dyn_cast<FloatingLiteral>(initExpr);
+    if (floatingLiteral != nullptr)
+    {
+      return FixItHint{};
+    }
+
     const auto* integerLiteral = dyn_cast<IntegerLiteral>(initExpr);
     if (integerLiteral != nullptr)
     {
@@ -70,9 +77,50 @@ FixItHint getFixItHint(const VarDecl* varDecl)
     const auto* implicitCastExpr = dyn_cast<ImplicitCastExpr>(initExpr);
     if (implicitCastExpr != nullptr)
     {
-      varDecl->dumpColor();
-      llvm::WithColor::error(llvm::errs(), "Implicit cast")
-          << "Implement replacement with literal suffix\n\n";
+      if (implicitCastExpr->getCastKind() == CK_IntegralCast)
+      {
+        const auto* alsoIntegerLiteral =
+            dyn_cast<IntegerLiteral>(implicitCastExpr->getSubExpr());
+        if (alsoIntegerLiteral != nullptr)
+        {
+          const uint64_t integerValue =
+              alsoIntegerLiteral->getValue().getLimitedValue();
+          std::string integerString = std::to_string(integerValue);
+          const auto* varType =
+              dyn_cast<BuiltinType>(varDecl->getType()->getCanonicalTypeInternal());
+          if (varType != nullptr)
+          {
+            switch (varType->getKind())
+            {
+            case BuiltinType::Long:
+              integerString.append("L");
+              break;
+            case BuiltinType::LongLong:
+              integerString.append("LL");
+              break;
+            case BuiltinType::ULong:
+              integerString.append("UL");
+              break;
+            case BuiltinType::ULongLong:
+              integerString.append("ULL");
+              break;
+            case BuiltinType::UInt:
+            case BuiltinType::UShort:
+            case BuiltinType::UChar:
+              integerString.append("U");
+              break;
+            default:
+              // nop
+              break;
+            }
+            const auto replacementString = varDecl->getNameAsString() + '{'
+                                         + integerString + '}';
+            const auto replacementRange = SourceRange{varDecl->getLocation(),
+                                                      initExpr->getExprLoc()};
+            return FixItHint::CreateReplacement(replacementRange, replacementString);
+          }
+        }
+      }
     }
   }
   return FixItHint{};
@@ -110,9 +158,12 @@ void BracedInitializationCheck::check(
   auto initStyle = varDecl->getInitStyle();
   if (initStyle != VarDecl::ListInit)
   {
-    diag(varDecl->getLocation(), "Variable '%0' has %1")
-        << varDecl->getNameAsString() << getInitStyleString(initStyle)
-        << getFixItHint(varDecl);
+    if (varDecl->hasInit() && (dyn_cast<CallExpr>(varDecl->getInit()) == nullptr))
+    {
+      diag(varDecl->getLocation(), "Variable '%0' has %1")
+          << varDecl->getNameAsString() << getInitStyleString(initStyle)
+          << getFixItHint(varDecl);
+    }
   }
 }
 

@@ -20,8 +20,10 @@ TEST(GFXModuleTest, PreferBracedInit)
 
   std::vector<ClangTidyError> Errors{};
   runCheckOnCode<BracedInitializationCheck>("int intVar1;\n"
-                                            "int intVar2 = 2;\n"
-                                            "int intVar3{};\n",
+                                            "unsigned long intVar2 = 2;\n"
+                                            "unsigned long intVar3 = 2.0f;\n"
+                                            "float floatVar = 0.8f;\n"
+                                            "int intVar4{};\n",
                                             &Errors,
                                             "dummyfilename.cpp");
 
