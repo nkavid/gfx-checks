@@ -1,4 +1,5 @@
 set(GFX_MODULE_UNIT_TESTS
+    "${CMAKE_CURRENT_LIST_DIR}/unittests/utils.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/unittests/class_cohesion_check_test.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/unittests/main_implementation_filename_check_test.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/unittests/package_namespace_check_test.cpp"
