@@ -49,6 +49,38 @@ const char* dummy = "class Foo\n"
                     "return _b + _a;\n"
                     "}\n";
 
+const char* foo_cpp = R"(
+#include "foo.hpp"
+
+int Foo::getData()
+{
+return _data;
+}
+
+void Foo::doNothing()
+{
+}
+)";
+
+namespace foo_hpp
+{
+const char* source = R"(
+#pragma once
+
+class Foo
+{
+  public:
+    int getData();
+    void doNothing();
+
+  private:
+    int _data{};
+};
+)";
+
+const char* path = "foo.hpp";
+} // namespace foo_hpp
+
 } // namespace dummy_source
 } // namespace
 
@@ -65,6 +97,32 @@ TEST(GFXModuleTest, ClassCohesion)
                                      "foo/bar.cpp",
                                      std::nullopt,
                                      Options);
+
+  auto errString = utils::getErrorString(Errors);
+
+  EXPECT_EQ(1U, Errors.size()) << errString;
+  EXPECT_TRUE(errString.find("score 50") != std::string::npos) << errString;
+}
+
+TEST(GFXModuleTest, ClassCohesionHeader)
+{
+  using namespace clang::tidy::gfx;
+
+  ClangTidyOptions Options;
+  Options.CheckOptions["test-check-0.Score"] = "100";
+
+  std::vector<ClangTidyError> Errors{};
+
+  std::map<StringRef, StringRef> fooInclude{
+      {dummy_source::foo_hpp::path, dummy_source::foo_hpp::source}
+  };
+
+  runCheckOnCode<ClassCohesionCheck>(dummy_source::foo_cpp,
+                                     &Errors,
+                                     "foo.cpp",
+                                     std::nullopt,
+                                     Options,
+                                     fooInclude);
 
   auto errString = utils::getErrorString(Errors);
 
