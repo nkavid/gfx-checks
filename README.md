@@ -183,6 +183,7 @@ int five = 6;         // C-style assignment initialization
 auto typeDeducedVar = /* ... */; // copy ctor
 void myFunc(int param) {}        // pass-by-value
 for (int i = 0; i < N; ++i) {}   // usually what it looks like :|
+auto tildes = std::string(7UL, '~'); // initializer list not applicable
 ```
 
 Enforcement exceptions a bit arbitrary? Specify cases in test.
