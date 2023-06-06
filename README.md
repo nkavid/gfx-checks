@@ -79,7 +79,7 @@ clang-tidy --checks="-*,gfx-*" \
 
 # Checks
 
-The tag 'experimental' in some checker names enables ignoring WIP checks when working on other stuff not on implementing checks.
+The tag 'experimental' in some checker names enables ignoring WIP checks when working on other stuff not on implementing checks. While developing checkers use [compiler-explorer](https://godbolt.org/) which includes AST viewer.
 
 - [gfx-implementation-in-namespace](#gfx-implementation-in-namespace)
 - [gfx-main-implementation-filename](#gfx-main-implementation-filename)
