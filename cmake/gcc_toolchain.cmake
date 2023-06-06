@@ -1,12 +1,20 @@
-set(CMAKE_CXX_COMPILER g++)
-set(CMAKE_C_COMPILER gcc)
-
-string(APPEND GFX_GCC_FLAGS
-  " -Werror"
-#  " -O3"
+set(CMAKE_CXX_COMPILER
+    g++
+)
+set(CMAKE_C_COMPILER
+    gcc
 )
 
-string(APPEND GFX_CXX_WARNING_FLAGS
+string(
+  APPEND
+  GFX_GCC_FLAGS
+  " -Werror"
+  # " -O3"
+)
+
+string(
+  APPEND
+  GFX_CXX_WARNING_FLAGS
   ${GFX_GCC_FLAGS}
   " -Wall"
   " -Wextra"
@@ -58,9 +66,13 @@ string(APPEND GFX_CXX_WARNING_FLAGS
   " -Wint-in-bool-context"
 )
 
-set(CMAKE_CXX_FLAGS "${GFX_CXX_WARNING_FLAGS}")
+set(CMAKE_CXX_FLAGS
+    "${GFX_CXX_WARNING_FLAGS}"
+)
 
-string(APPEND CMAKE_C_FLAGS
+string(
+  APPEND
+  CMAKE_C_FLAGS
   ${GFX_GCC_FLAGS}
   " -Wno-declaration-after-statement"
   " -Wall"
