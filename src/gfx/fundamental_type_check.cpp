@@ -4,9 +4,17 @@
 
 #include "gfx/fundamental_type_check.hpp"
 
-#include <clang-tidy/utils/OptionsUtils.h>
-#include <clang/AST/ASTContext.h>
+#include <clang-tidy/ClangTidyCheck.h>
+#include <clang/AST/Decl.h>
+#include <clang/AST/Expr.h>
+#include <clang/AST/Type.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
+#include <clang/ASTMatchers/ASTMatchers.h>
+#include <clang/ASTMatchers/ASTMatchersInternal.h>
+#include <clang/Basic/Diagnostic.h>
+#include <clang/Basic/SourceManager.h>
+
+#include <string>
 
 namespace clang::tidy::gfx
 {

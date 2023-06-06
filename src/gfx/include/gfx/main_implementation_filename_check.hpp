@@ -1,18 +1,21 @@
-//===--- MainImplementationFilenameCheck.h - clang-tidy ---------*- C++ -*-===//
-//
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//===----------------------------------------------------------------------===//
 
 #pragma once
 
-#include "clang-tidy/ClangTidyCheck.h"
+#include <clang-tidy/ClangTidyCheck.h>
+#include <clang-tidy/ClangTidyDiagnosticConsumer.h>
+#include <clang-tidy/ClangTidyOptions.h>
+#include <clang/ASTMatchers/ASTMatchFinder.h>
+#include <clang/Basic/LLVM.h>
+#include <clang/Basic/LangOptions.h>
+#include <llvm/ADT/StringRef.h>
+
+#include <vector>
 
 namespace clang::tidy::gfx
 {
-
 class MainImplementationFilenameCheck : public ClangTidyCheck
 {
   public:

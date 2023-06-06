@@ -4,16 +4,20 @@
 
 #include "gfx/package_namespace_check.hpp"
 
+#include <clang-tidy/ClangTidyCheck.h>
 #include <clang-tidy/utils/OptionsUtils.h>
-#include <clang/AST/ASTContext.h>
 #include <clang/AST/Decl.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
+#include <clang/ASTMatchers/ASTMatchers.h>
+#include <clang/ASTMatchers/ASTMatchersInternal.h>
+#include <clang/Basic/Diagnostic.h>
+#include <clang/Basic/SourceManager.h>
+#include <llvm/Support/Casting.h>
 
 using namespace clang::ast_matchers;
 
 namespace clang::tidy::gfx
 {
-
 PackageNamespaceCheck::PackageNamespaceCheck(StringRef Name, ClangTidyContext* context)
     : ClangTidyCheck(Name, context),
       _allowed(utils::options::parseStringList(Options.get("Allowed", "detail")))

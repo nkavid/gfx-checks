@@ -4,12 +4,24 @@
 
 #include "gfx/braced_initialization_check.hpp"
 
-#include "clang/Basic/TargetInfo.h"
-#include "llvm/Support/WithColor.h"
-
-#include <clang-tidy/utils/OptionsUtils.h>
-#include <clang/AST/ASTContext.h>
+#include <clang-tidy/ClangTidyCheck.h>
+#include <clang/AST/Decl.h>
+#include <clang/AST/Expr.h>
+#include <clang/AST/ExprCXX.h>
+#include <clang/AST/OperationKinds.h>
+#include <clang/AST/Type.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
+#include <clang/ASTMatchers/ASTMatchers.h>
+#include <clang/ASTMatchers/ASTMatchersInternal.h>
+#include <clang/Basic/Diagnostic.h>
+#include <clang/Basic/SourceLocation.h>
+#include <clang/Basic/SourceManager.h>
+#include <llvm/ADT/APInt.h>
+#include <llvm/Support/Casting.h>
+
+#include <cstdint>
+#include <string>
+#include <string_view>
 
 namespace clang::tidy::gfx
 {

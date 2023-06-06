@@ -1,16 +1,20 @@
-//===--- ImplementationInNamespaceCheck.h - clang-tidy ----------*- C++ -*-===//
-//
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//===----------------------------------------------------------------------===//
 
 #pragma once
 
+#include <clang-tidy/ClangTidyDiagnosticConsumer.h>
+#include <clang-tidy/ClangTidyOptions.h>
+#include <clang/AST/Decl.h>
+#include <clang/ASTMatchers/ASTMatchFinder.h>
+#include <clang/Basic/LLVM.h>
+#include <clang/Basic/LangOptions.h>
+#include <llvm/ADT/StringRef.h>
+
 #include <filesystem>
 #include <map>
-#include <string>
+#include <vector>
 
 #include "clang-tidy/ClangTidyCheck.h"
 

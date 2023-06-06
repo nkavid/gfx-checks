@@ -4,7 +4,12 @@
 
 #pragma once
 
-#include "clang-tidy/ClangTidyCheck.h"
+#include <clang-tidy/ClangTidyCheck.h>
+#include <clang-tidy/ClangTidyDiagnosticConsumer.h>
+#include <clang/ASTMatchers/ASTMatchFinder.h>
+#include <clang/Basic/LLVM.h>
+#include <clang/Basic/LangOptions.h>
+#include <llvm/ADT/StringRef.h>
 
 namespace clang::tidy::gfx
 {

@@ -13,6 +13,7 @@
 
 #include <clang-tidy/ClangTidyModule.h>
 #include <clang-tidy/ClangTidyModuleRegistry.h>
+#include <llvm/ADT/StringRef.h>
 
 namespace clang::tidy
 {

@@ -4,15 +4,20 @@
 
 #include "gfx/main_implementation_filename_check.hpp"
 
+#include <clang-tidy/ClangTidyCheck.h>
 #include <clang-tidy/utils/OptionsUtils.h>
-#include <clang/AST/ASTContext.h>
+#include <clang/AST/DeclBase.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
+#include <clang/ASTMatchers/ASTMatchers.h>
+#include <clang/ASTMatchers/ASTMatchersInternal.h>
+#include <clang/Basic/SourceManager.h>
+
+#include <algorithm>
 
 using namespace clang::ast_matchers;
 
 namespace clang::tidy::gfx
 {
-
 MainImplementationFilenameCheck::MainImplementationFilenameCheck(
     StringRef Name,
     ClangTidyContext* context)

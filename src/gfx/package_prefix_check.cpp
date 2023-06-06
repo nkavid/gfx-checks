@@ -4,6 +4,14 @@
 
 #include "gfx/package_prefix_check.hpp"
 
+#include <clang-tidy/ClangTidyCheck.h>
+#include <clang/AST/Decl.h>
+#include <clang/ASTMatchers/ASTMatchers.h>
+#include <clang/ASTMatchers/ASTMatchersInternal.h>
+#include <clang/Basic/Diagnostic.h>
+#include <clang/Basic/SourceManager.h>
+#include <llvm/ADT/Twine.h>
+
 #include <tuple>
 
 namespace clang::tidy::gfx

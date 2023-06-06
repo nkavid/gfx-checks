@@ -44,6 +44,8 @@ find_package(
   CONFIG
 )
 
+include(cmake/iwyu.cmake)
+
 # Local utility for better overview which compile options are used with which sources
 function(gfx_tidy_object)
   set(one_value_args

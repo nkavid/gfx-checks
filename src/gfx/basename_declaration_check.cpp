@@ -4,13 +4,23 @@
 
 #include "gfx/basename_declaration_check.hpp"
 
+#include <clang-tidy/ClangTidyCheck.h>
 #include <clang-tidy/utils/OptionsUtils.h>
-#include <clang/AST/ASTContext.h>
 #include <clang/AST/Decl.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
+#include <clang/ASTMatchers/ASTMatchers.h>
+#include <clang/ASTMatchers/ASTMatchersInternal.h>
+#include <clang/Basic/Diagnostic.h>
+#include <clang/Basic/DiagnosticIDs.h>
+#include <clang/Basic/SourceLocation.h>
+#include <clang/Basic/SourceManager.h>
+#include <llvm/Support/Casting.h>
 
+#include <algorithm>
+#include <cctype>
 #include <filesystem>
-#include <iostream>
+#include <optional>
+#include <string>
 
 using namespace clang::ast_matchers;
 
