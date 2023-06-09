@@ -1,60 +1,33 @@
 cmake_minimum_required(VERSION 3.25)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS
-    ON
-)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
-    ${CMAKE_BINARY_DIR}/bin
-)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY
-    ${CMAKE_BINARY_DIR}/lib
-)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-    ${CMAKE_BINARY_DIR}/lib
-)
-set(GFX_CMAKE_CONFIG_OUTPUT_DIRECTORY
-    ${CMAKE_BINARY_DIR}/lib/cmake
-)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(GFX_CMAKE_CONFIG_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/cmake)
 
-set(CMAKE_TOOLCHAIN_FILE
-    "${CMAKE_SOURCE_DIR}/cmake/gcc_toolchain.cmake"
-)
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/cmake/gcc_toolchain.cmake")
 
-set(CMAKE_CXX_STANDARD
-    17
-)
+set(CMAKE_CXX_STANDARD 17)
 
 project(
   GFXTidy
   DESCRIPTION "Checkers for clang-tidy used in gfx sandbox repository"
   VERSION 0.0.1
-  LANGUAGES CXX
-            C
+  LANGUAGES CXX C
 )
 
-find_package(
-  LLVM
-  REQUIRED
-  CONFIG
-)
-find_package(
-  Clang
-  REQUIRED
-  CONFIG
-)
+find_package(LLVM REQUIRED CONFIG)
+find_package(Clang REQUIRED CONFIG)
 
 include(cmake/iwyu.cmake)
 
-# Local utility for better overview which compile options are used with which sources
+# Local utility for better overview which compile options are used with which
+# sources
 function(gfx_tidy_object)
-  set(one_value_args
-      OBJECT
-  )
-  set(multi_value_args
-      SOURCES
-      OPTIONS
-  )
+  set(one_value_args OBJECT)
+  set(multi_value_args SOURCES OPTIONS)
   cmake_parse_arguments(
     GFX_TIDY
     ""
@@ -63,24 +36,13 @@ function(gfx_tidy_object)
     ${ARGN}
   )
 
-  add_library(
-    ${GFX_TIDY_OBJECT}
-    OBJECT
-    ${GFX_TIDY_SOURCES}
-  )
+  add_library(${GFX_TIDY_OBJECT} OBJECT ${GFX_TIDY_SOURCES})
 
   target_compile_options(
-    ${GFX_TIDY_OBJECT}
-    PRIVATE
-      ${GFX_TIDY_OPTIONS}
-      "-fPIC"
-      "-fno-rtti"
+    ${GFX_TIDY_OBJECT} PRIVATE ${GFX_TIDY_OPTIONS} "-fPIC" "-fno-rtti"
   )
 
-  target_include_directories(
-    ${GFX_TIDY_OBJECT}
-    PRIVATE "src/gfx/include"
-  )
+  target_include_directories(${GFX_TIDY_OBJECT} PRIVATE "src/gfx/include")
 
 endfunction()
 
@@ -106,15 +68,11 @@ gfx_tidy_object(
     "src/gfx/package_prefix_check.cpp"
 )
 
-add_library(
-  gfx_tidy_checks
-  SHARED
-)
+add_library(gfx_tidy_checks SHARED)
 
 target_sources(
   gfx_tidy_checks
-  PRIVATE $<TARGET_OBJECTS:gfxTidyModule>
-          $<TARGET_OBJECTS:gfxTidyChecks>
+  PRIVATE $<TARGET_OBJECTS:gfxTidyModule> $<TARGET_OBJECTS:gfxTidyChecks>
 )
 
 install(

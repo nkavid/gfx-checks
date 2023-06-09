@@ -1,9 +1,5 @@
-set(CMAKE_CXX_COMPILER
-    g++
-)
-set(CMAKE_C_COMPILER
-    gcc
-)
+set(CMAKE_CXX_COMPILER g++)
+set(CMAKE_C_COMPILER gcc)
 
 string(
   APPEND
@@ -66,9 +62,7 @@ string(
   " -Wint-in-bool-context"
 )
 
-set(CMAKE_CXX_FLAGS
-    "${GFX_CXX_WARNING_FLAGS}"
-)
+set(CMAKE_CXX_FLAGS "${GFX_CXX_WARNING_FLAGS}")
 
 string(
   APPEND

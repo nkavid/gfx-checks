@@ -1,10 +1,6 @@
-set(GFX_IWYU_EXECUTABLE
-    include-what-you-use;
-)
+set(GFX_IWYU_EXECUTABLE include-what-you-use;)
 
-set(IWYU_EXTERNAL_PATH
-    /opt/pkg/llvm/llvm_16.0.5/share/include-what-you-use
-)
+set(IWYU_EXTERNAL_PATH /opt/pkg/llvm/llvm_16.0.5/share/include-what-you-use)
 
 set(GFX_IWYU_OPTIONS
     -w;
@@ -26,11 +22,5 @@ set(GFX_IWYU_OPTIONS
 )
 
 message(STATUS "gfx::ENABLED include-what-you-use")
-set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE
-    ${GFX_IWYU_EXECUTABLE};
-    ${GFX_IWYU_OPTIONS};
-)
-set(CMAKE_C_INCLUDE_WHAT_YOU_USE
-    ${GFX_IWYU_EXECUTABLE};
-    ${GFX_IWYU_OPTIONS};
-)
+set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${GFX_IWYU_EXECUTABLE}; ${GFX_IWYU_OPTIONS};)
+set(CMAKE_C_INCLUDE_WHAT_YOU_USE ${GFX_IWYU_EXECUTABLE}; ${GFX_IWYU_OPTIONS};)
