@@ -150,6 +150,7 @@ void BracedInitializationCheck::registerMatchers(ast_matchers::MatchFinder* Find
 
   Finder->addMatcher(varDecl(unless(anyOf(parmVarDecl(),
                                           hasParent(cxxCatchStmt()),
+                                          hasType(autoType()),
                                           hasAncestor(forStmt()),
                                           hasAncestor(cxxForRangeStmt()),
                                           hasDescendant(cxxConstructExpr()),

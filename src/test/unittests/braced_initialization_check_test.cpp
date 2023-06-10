@@ -21,6 +21,7 @@ namespace dummy_source
 const char* braced_init = "int intVar1;\n"
                           "unsigned long intVar2 = 2;\n"
                           "unsigned long intVar3 = 2.0f;\n"
+                          "auto intVar5 = 2;\n"
                           "float floatVar = 0.8f;\n"
                           "int intVar4{};\n"
                           "\n";
@@ -36,7 +37,7 @@ TEST(GFXModuleTest, PreferBracedInit)
                                             &Errors,
                                             "dummyfilename.cpp");
 
-  EXPECT_EQ(2U, Errors.size())
+  EXPECT_EQ(3U, Errors.size())
       << utils::getErrorString(Errors, dummy_source::braced_init);
 }
 
