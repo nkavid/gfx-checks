@@ -7,7 +7,6 @@
 #include <clang-tidy/ClangTidyCheck.h>
 #include <clang-tidy/ClangTidyDiagnosticConsumer.h>
 #include <clang-tidy/ClangTidyOptions.h>
-#include <clang/AST/Decl.h>
 #include <clang/AST/DeclCXX.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 #include <clang/Basic/LLVM.h>
@@ -42,7 +41,7 @@ class ClassCohesionCheck : public ClangTidyCheck
                           size_t average,
                           const std::vector<const CXXMethodDecl*>& methods,
                           const std::vector<size_t>& scores);
-    std::map<const CXXRecordDecl*, std::vector<const FieldDecl*>> _classMembers{};
+
     std::map<const CXXRecordDecl*, std::vector<const CXXMethodDecl*>> _classMethods{};
 
     unsigned _maxAllowedScore{};
