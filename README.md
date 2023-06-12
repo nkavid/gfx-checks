@@ -295,4 +295,7 @@ Support cohesion metric for other stuff than class?
 
 - [ ] Check for local linkage declarations usage (constants, variables, functions, ...)
 
+# find-implicit-cast
 
+[How to write RecursiveASTVisitor based ASTFrontendActions](https://clang.llvm.org/docs/RAVFrontendAction.html)
+[Parsing common tools options](https://releases.llvm.org/3.5.0/tools/clang/docs/LibTooling.html)

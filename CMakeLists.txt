@@ -86,3 +86,17 @@ include(cmake/gfx_base_install.cmake)
 
 gfx_base_install_target(gfx_tidy_checks)
 gfx_base_install_finish()
+
+add_executable(find-implicit-cast "src/front_end_action/main.cpp")
+
+target_link_libraries(
+  find-implicit-cast
+  LLVMSupport
+  clangAST
+  clangBasic
+  clangFrontend
+  clangSerialization
+  clangTooling
+)
+
+target_compile_options(find-implicit-cast PRIVATE "-w" "-fno-rtti" "-O3")

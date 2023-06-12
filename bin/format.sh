@@ -18,4 +18,5 @@ function format()
 }
 
 format src/gfx/
+format src/front_end_action/
 format src/test/unittests/
